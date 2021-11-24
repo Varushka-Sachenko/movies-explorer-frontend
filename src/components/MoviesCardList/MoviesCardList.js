@@ -8,7 +8,6 @@ function MoviesCardList(props) {
         <section className="elements">
 
             {props.cards.map((element) => {
-
                 return (<MoviesCard key={element._id} cardsToAdd={element} buttonClass={props.buttonClass}/>)
             })}
 
