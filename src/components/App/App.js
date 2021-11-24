@@ -2,25 +2,21 @@
 
 import React from 'react'
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
-import * as Auth from '../utils/Auth'
-import union from '../images/Union.png'
-import error from '../images/Error.png'
+import * as Auth from '../../utils/Auth'
+import film1 from '../../images/33words.png'
 
-import api from '../utils/api.js'
-import Header from './Header'
-import Main from './Main'
-import Footer from './Footer'
-import PopupWithForm from './PopupWithForm'
-import ImagePopup from './ImagePopup'
-import EditProfilePopup from './EditProfilePopup';
-import EditAvatarPopup from './EditAvatarPopup'
-import AddPlacePopup from './AddPlacePopup'
-import Login from './Login'
-import Register from './Register'
-import ProtectedRoute from "./ProtectedRoute";
-import InfoTooltip from './InfoTooltip.js';
+import api from '../../utils/api.js'
+import Header from '../Header/Header0'
+import Header1 from '../Header/Header1'
+import Main from '../Main/Main'
 
-import { CurrentUserContext, defaultUserInfo } from '../contexts/CurrentUserContext';
+import Movies from '../Movies/Movies';
+import Footer from '../../components/Footer/Footer'
+import Profile from '../Profile/Profile';
+
+import { CurrentUserContext, defaultUserInfo } from '../../contexts/CurrentUserContext';
+import Register from '../Register/Register';
+import Login from '../Login/Login';
 
 function App(props) {
   const history = useHistory();
@@ -42,11 +38,41 @@ function App(props) {
 
   const [userData, setUserData] = React.useState({ email: "", password: "" });
 
+  const moviesCards = [
+    {
+      name: "33 слова о дизайне",
+      link: film1,
+      _id: 0,
+      duration: "1ч 42м"
+    },
+    {
+      name: "33 слова о дизайне",
+      link: film1,
+      _id: 0,
+      duration: "1ч 42м"
+    }
+  ]
+
+
   React.useEffect(() => {
     api.getInitialCards()
       .then((res) => {
+        const cards = [
+          {
+            name: "33 слова о дизайне",
+            link: film1,
+            _id: 0,
+            duration: "1ч 42м"
+          },
+          {
+            name: "33 слова о дизайне",
+            link: film1,
+            _id: 0,
+            duration: "1ч 42м"
+          }
+        ]
 
-        setCards(res)
+        setCards(cards)
       })
       .catch((err) => {
         console.log(err);
@@ -215,27 +241,31 @@ function App(props) {
   React.useEffect(() => {
     tokenCheck()
   }, [])
-  
+
   const MainComponent = () => {
 
-    const signOut = () => {
+    return (<>
+      <Header regLink="/signup" signinLink="/signin" />
+      <Main cards={cards}  />
+      <Footer />
+    </>)
+  }
 
-      localStorage.removeItem('token');
-      setIsLogged(false)
-      history.push('/sign-in');
-    }
-
+  const MoviesComponent = (props) => {
 
     return (<>
-      <Header signOut={signOut} buttonText="Выйти" link="/sign-up" userEmail={userData.email} />
-      <Main cards={cards} onCardLike={handleCardLike} onCardDelete={handleCardDelete} onCardClick={handleCardClick} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onEditAvatar={handleEditAvatarClick} />
+      <Header1 />
+      <Movies cards={moviesCards} buttonClass="element__like"/>
       <Footer />
+    </>)
+  }
 
-      <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
-      <AddPlacePopup onSubmit={handleAddPlaceSubmit} onClose={closeAllPopups} isOpen={isAddPlacePopupOpen} />
-      <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} onSubmit={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />
-      <PopupWithForm buttonText="Да" onClose={closeAllPopups} isOpen={false} title="Вы уверены?" name="delete-card" />
-      <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+  const SavedMoviesComponent = (props) => {
+
+    return (<>
+      <Header1 />
+      <Movies cards={moviesCards} buttonClass="element__saved"/>
+      <Footer />
     </>)
   }
 
@@ -284,26 +314,25 @@ function App(props) {
       <div className="App">
 
         <div className="page">
-          <InfoTooltip title="Что-то пошло не так! Попробуйте ещё раз." name="modal" isOpen={isErrorPopupOpened} onClose={closeAllPopups} image={error} />
-          <InfoTooltip title="Вы успешно зарегистрировались!" name="modal" isOpen={isSuccessPopupOpened} onClose={closeAllPopups} image={union} />
           <Switch>
-            <Route path="/sign-up">
-              <Register handleSubmit={handleSubmitRegister} />
+            
+            <Route path="/movies">
+              <MoviesComponent  />
             </Route>
-            <Route path="/sign-in">
-              <Login handleSubmit={handleSubmitLogin} setLogged={setIsLogged} handleLogin={handleLogin} userEmail={userData.email} setUserData={setUserData} />
+            <Route path="/saved-movies">
+              <SavedMoviesComponent />
             </Route>
-            <ProtectedRoute
-              path="/"
-              loggedIn={isLogged}
-              component={MainComponent}
-            />
-            <Route>
-              {isLogged ? (
-                <Redirect to="/" />
-              ) : (
-                <Redirect to="/sign-in" />
-              )}
+            <Route path="/signin">
+              <Login />
+            </Route>
+            <Route path="/signup">
+              <Register />
+            </Route>
+            <Route path="/profile">
+              <Profile name="Варя" email="varushka@ya.ru" />
+            </Route>
+            <Route path="/">
+              <MainComponent />
             </Route>
           </Switch>
 
