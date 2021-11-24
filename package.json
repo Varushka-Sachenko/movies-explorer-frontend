@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "name": "mesto",
+=======
+  "name": "movies",
+>>>>>>> aa158ac3d6ea539cae688f4300e40dc8649c34a4
   "version": "0.1.0",
   "private": true,
   "dependencies": {
