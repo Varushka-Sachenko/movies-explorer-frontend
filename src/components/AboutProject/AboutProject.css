@@ -1,0 +1,132 @@
+.about{
+    margin-top: 20px;
+}
+
+.about__header{
+    width: 85%;
+    margin: auto;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 22px;
+    line-height: 27px;
+    color:white;
+    padding-bottom: 23px;
+    border-bottom: 1px solid #DADADA;
+    text-align: start;
+    margin-top: 90px;
+}
+
+.about__text-wrap{
+    display: flex;
+    width: 85%;
+    margin: auto;
+    justify-content: space-between;
+    margin-top: 70px;
+    flex-wrap: wrap;
+}
+
+.about__descript{
+    max-width: 320px;
+}
+
+.about__text-header{
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 24px;
+    color: white;
+    text-align: start;
+    margin-bottom: 22px;
+}
+
+.about__text-parag{
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 18px;
+    /* or 150% */
+    text-align: start;
+    color: #FFFFFF;
+}
+
+.about__block{
+    width: 85%;
+    margin: auto;
+}
+
+.block__weeks{
+    display: flex;
+}
+
+
+
+.block__weeks_f{
+    width: 20%;
+    background-color: #3DDC84;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 36px;
+    text-align: center;
+}
+
+.block__weeks_s{
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 36px;
+    text-align: center;
+    background-color: #303030;
+    color: #FFFFFF;
+    width: 80%;
+}
+
+.block__steps_f{
+    width: 20%;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 17px;
+    /* identical to box height, or 121% */
+
+    text-align: center;
+    margin-bottom: 90px;
+    color: #A0A0A0;
+}
+
+.block__steps_s{
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 17px;
+    /* identical to box height, or 121% */
+    width: 80%;
+    text-align: center;
+
+    color: #A0A0A0;
+}
+
+@media (max-width: 470px){
+    .block__weeks_f{
+        font-size: 11px;
+    }
+    .block__weeks_s{
+        font-size: 11px;
+    }
+    .block__steps_f{
+        font-size: 11px;
+    }
+    .block__steps_s{
+        font-size: 11px;
+    }
+    .about__descript{
+        margin-bottom: 56px;
+    }
+}

@@ -1,0 +1,56 @@
+.portfolio__header{
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 20px;
+    margin: auto;
+    /* identical to box height, or 111% */
+    margin-top: 70px;
+    color: #A0A0A0;
+    width: 80%;
+    text-align: start;
+    margin-bottom: 70px;
+}
+
+.porfolio__elem{
+    width: 80%;
+    margin: auto;
+    display: flex;
+    border-bottom: 1px solid #424242;
+    justify-content: space-between;
+}
+
+.porfolio__elem:last-child{
+    border-bottom: none;
+}
+
+.elem__image{
+    background-image: url(../../images/arrow.png);
+    width: 27px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.elem__text{
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 28px;
+    line-height: 69px;
+    /* identical to box height, or 179% */
+    text-decoration: none;
+    letter-spacing: -0.04em;
+    text-align: start;
+    color: #FFFFFF;
+}
+
+@media (max-width: 520px){
+    .elem__text{
+        font-size: 18px;
+        line-height: 67px;
+    }
+    .porfolio__elem{
+        width: 90%;
+    }    
+}

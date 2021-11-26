@@ -1,0 +1,33 @@
+.navTab{
+    display: flex;
+    justify-content: center;
+    background-color: #272727;
+    margin: auto;
+    margin-bottom: 0;
+    border-radius: 10px;
+    margin-top: 0;
+}
+
+.navTab__button{
+    margin-right: 10px;
+    margin-bottom: 30px;
+    background-color: #303030;
+    border-radius: 10px;
+    color: white;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 36px;
+    width: 96px;
+    border: none;
+}
+
+@media (max-width: 470px){
+    .navTab__button{
+        width: 82px;
+    }
+    .navTab__button:last-child{
+        margin-right: 0;
+    }
+}

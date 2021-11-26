@@ -1,0 +1,30 @@
+.promo{
+    background-color: #272727;
+    margin: 0 40px;
+    height: 427px;
+    display: flex;
+    width: 85%;
+    margin: auto;
+    border-radius: 10px;
+    flex-direction: column;
+}
+
+.promo__header{
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 40px;
+    line-height: 52px;
+    color: white;
+    max-width: 730px;
+
+    margin: auto;
+
+}
+
+@media (max-width: 470px){
+    .promo__header{
+        font-size: 29px;
+        line-height: 37px;
+    }
+}
