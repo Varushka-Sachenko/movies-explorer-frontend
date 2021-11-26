@@ -8,10 +8,33 @@
 }
 
 
+
+
+.header__close{
+    background-color: transparent;
+    border: none;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    padding: 0;
+}
+
+.header__close:hover{
+    cursor: pointer;
+    opacity: .7;
+    transition: .5s;
+}
+
+.header__close:active ~ .aside{
+    display: none;
+}
+
 .header__logo{
-    width: 38px;
     height: 38px;
-    background-image: url(../../images/logo.png);
+    padding: 0;
 }
 
 .header__logo:hover{
@@ -79,12 +102,17 @@
     color: #FFFFFF;
 }
 
+.header__link:hover{
+    cursor: pointer;
+    opacity: .7;
+    transition: .3s;
+}
+
 .header__nav{
     height: fit-content;
 }
 
 .acount__img{
-    background-image: url(../../images/account.png);
     background-color: #313131;
     width: 26px;
     height: 26px;
@@ -92,10 +120,14 @@
     background-repeat: no-repeat;
     background-position: center;
     margin-left: 7px;
+    padding: 0;
+    display: grid;
+    align-content: center;
+    justify-content: center;
+
 }
 
 .header__open{
-    background-image: url(../../images/open.png);
     width: 44px;
     height: 44px;
     border: none;
@@ -109,9 +141,48 @@
     opacity: .7;
 }
 
+.aside{
+    position: fixed;
+    background-color: #202020;
+    height: 100vh;
+    top: 0;
+    right: 0;
+    max-width: 520px;
+    flex-direction: column;
+    
+}
+
+.aside__wrap{
+    background-color: rgba(0,0,0,.3);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    display: none;
+    z-index: 1;
+}
+
+.header__nav_aside{
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+    align-items: center;
+    margin: auto;
+    margin-top: 165px;
+}
+
 @media screen and (max-width: 879px){
     .header{
         max-width: 320px;
+    }
+    .header1{
+        max-width: 80%;
+    }
+    .aside{
+        max-width: 520px;
+    }
+    .header0{
+        max-width: 85%;
     }
     .header__open{
         display: flex;
@@ -121,7 +192,46 @@
     .header__nav{
         display: none;
     }
+    .header__nav_aside{
+        display: flex;
+    }
     .header__buttons{
         display: none;
     }
+    .header0__buttons{
+        display: flex;
+    }
+    .header__logo{
+        margin: auto;
+    }
+    .header0__logo{
+        margin: 0;
+    }
+
+    .header__link{
+        font-family: Inter;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 22px;
+        /* identical o box height */
+        text-align: center;
+        color: #FFFFFF;
+        margin-bottom: 28px;
+    }
+
+    .header__link:active{
+        text-decoration: 2px solid #FFFFFF;
+    }
+
+    .header__buttons_aside{
+        display: flex;
+        align-self: end;
+        margin: auto;
+        margin-bottom: 85px;
+    }
+}
+
+.active{
+    display: flex;
 }

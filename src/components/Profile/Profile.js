@@ -1,13 +1,15 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom';
 import Header from '../Header/Header1';
+import HeaderAside from '../Header/HeaderAside';
 import { Link } from 'react-router-dom';
 function Profile(props) {
 
     return (
 
         <>
-            <Header />
+            <HeaderAside isOpen={props.isAsideOpened} closeClick={props.handleAsideChange}/>
+            <Header isOpen={props.isAsideOpened} asideClick={props.handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
             <section className="profile">
                 <h2 className="profile__header">Привет, {props.name}!</h2>
                 <div className="profile__block">

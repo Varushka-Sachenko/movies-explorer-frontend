@@ -2,8 +2,10 @@
     display: flex;
     justify-content: center;
     background-color: #272727;
-    width: 80%;
     margin: auto;
+    margin-bottom: 0;
+    border-radius: 10px;
+    margin-top: 0;
 }
 
 .navTab__button{

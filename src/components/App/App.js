@@ -9,6 +9,7 @@ import api from '../../utils/api.js'
 import Header from '../Header/Header0'
 import Header1 from '../Header/Header1'
 import Main from '../Main/Main'
+import HeaderAside from '../Header/HeaderAside'
 
 import Movies from '../Movies/Movies';
 import Footer from '../../components/Footer/Footer'
@@ -26,6 +27,7 @@ function App(props) {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
   const [isErrorPopupOpened, setIsErrorPopupOpened] = React.useState(false);
   const [isSuccessPopupOpened, setIsSuccessPopupOpened] = React.useState(false);
+  const [isAsideOpened, setIsAsideOpened] = React.useState(false);
 
 
   const [selectedCard, setSelectedCard] = React.useState({ name: "", link: "" });
@@ -150,6 +152,7 @@ function App(props) {
     setIsErrorPopupOpened(false)
     setIsSuccessPopupOpened(false)
     setSelectedCard({ name: "", link: "" })
+    setIsAsideOpened(false)
   }
 
   const handleCardClick = (card) => {
@@ -246,27 +249,35 @@ function App(props) {
 
     return (<>
       <Header regLink="/signup" signinLink="/signin" />
-      <Main cards={cards}  />
+      <Main cards={cards} />
       <Footer />
     </>)
   }
+  
 
   const MoviesComponent = (props) => {
 
     return (<>
-      <Header1 />
-      <Movies cards={moviesCards} buttonClass="element__like"/>
+      <HeaderAside isOpen={isAsideOpened} closeClick={closeAllPopups}/>
+      <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
+      <Movies cards={moviesCards} buttonClass="element__like" />
       <Footer />
+
     </>)
   }
 
   const SavedMoviesComponent = (props) => {
 
     return (<>
-      <Header1 />
-      <Movies cards={moviesCards} buttonClass="element__saved"/>
+      <HeaderAside isOpen={isAsideOpened} closeClick={handleAsideChange}/>
+      <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
+      <Movies cards={moviesCards} buttonClass="element__saved" />
       <Footer />
     </>)
+  }
+
+  const handleAsideChange = () => {
+    setIsAsideOpened(!isAsideOpened)
   }
 
   const handleSubmitLogin = (e, email, password, setEmail, setPassword) => {
@@ -315,9 +326,9 @@ function App(props) {
 
         <div className="page">
           <Switch>
-            
+
             <Route path="/movies">
-              <MoviesComponent  />
+              <MoviesComponent />
             </Route>
             <Route path="/saved-movies">
               <SavedMoviesComponent />
@@ -329,7 +340,7 @@ function App(props) {
               <Register />
             </Route>
             <Route path="/profile">
-              <Profile name="Варя" email="varushka@ya.ru" />
+              <Profile name="Варя" email="varushka@ya.ru" isAsideOpened={isAsideOpened} handleAsideChange={handleAsideChange} />
             </Route>
             <Route path="/">
               <MainComponent />

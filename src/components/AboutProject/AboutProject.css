@@ -3,7 +3,7 @@
 }
 
 .about__header{
-    width: 80%;
+    width: 85%;
     margin: auto;
     font-family: Inter;
     font-style: normal;
@@ -19,7 +19,7 @@
 
 .about__text-wrap{
     display: flex;
-    width: 80%;
+    width: 85%;
     margin: auto;
     justify-content: space-between;
     margin-top: 70px;
@@ -27,7 +27,7 @@
 }
 
 .about__descript{
-    max-width: 550px;
+    max-width: 320px;
 }
 
 .about__text-header{
@@ -53,7 +53,7 @@
 }
 
 .about__block{
-    width: 80%;
+    width: 85%;
     margin: auto;
 }
 

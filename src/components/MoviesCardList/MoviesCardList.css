@@ -5,3 +5,28 @@
     margin-top: 70px;
     padding-top: 54px;
 }
+
+.pre__button{
+    max-width: 360px;
+    line-height: 36px;
+    margin: auto;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    display: flex;
+    border-radius: 6px;
+    color: #FFFFFF;
+    border: none;
+    background-color: #2F2F2F;
+    width: 360px;
+    display: flex;
+    justify-content: center;
+    margin-top: 70px;
+}
+
+.pre__button:hover{
+    cursor: pointer;
+    transition: .5s;
+    opacity: .7;
+}

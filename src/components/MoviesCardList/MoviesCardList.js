@@ -10,8 +10,7 @@ function MoviesCardList(props) {
             {props.cards.map((element) => {
                 return (<MoviesCard key={element._id} cardsToAdd={element} buttonClass={props.buttonClass}/>)
             })}
-
-
+            <button className="pre__button">Ещё</button>
         </section>
     );
 }

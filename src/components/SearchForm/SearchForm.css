@@ -23,7 +23,7 @@
 }
 
 .form__button{
-    background-image: url(../../images/find.png);
+    
     background-position: center;
     background-repeat: no-repeat;
     width: 34px;
@@ -31,7 +31,15 @@
     background-color: transparent;
     border: none;
     margin: auto;
-    margin-right: 6px;
+    margin-right: 5px;
+    padding: 0;
+}
+
+.form__button:hover{
+    
+    cursor: pointer;
+    opacity: .7;
+    transition: .3s;
 }
 
 .switch__box{
@@ -39,6 +47,7 @@
     margin: auto;
     margin-top: 41px;
     justify-content: center;
+    
 }
 
 .switch{
@@ -49,6 +58,7 @@
     width: 36px;
     height: 20px;
     -webkit-appearance: none;
+    z-index: 0;
 }
 
 .switch:checked{
