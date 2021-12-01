@@ -19,7 +19,7 @@ function HeaderAside(props) {
   return (
     <div className={`aside__wrap ${statusOpened}`}>
       <header className="header aside">
-        <button className="header__close" onClick={closeAside}><img src={close}></img></button>
+        <button className="header__close" onClick={closeAside}><img alt="закрыть" src={close}></img></button>
         <nav className="header__nav header__nav_aside">
           <Link to="/" onClick={props.mainClick} className="header__link">Главная</Link>
           <Link to="/movies" onClick={props.moviesClick} className="header__link">Фильмы</Link>
@@ -27,7 +27,7 @@ function HeaderAside(props) {
         </nav>
         <div className="header__buttons header__buttons_aside">
           <Link to="/profile" onClick={props.accClick} className="header__reg-button">Аккаунт</Link>
-          <div className="acount__img" alt="аккаунт"><img src={account}></img></div>
+          <div className="acount__img" alt="аккаунт"><img alt="иконка аккаунта" src={account}></img></div>
         </div>
         <button className="header__open"></button>
       </header>

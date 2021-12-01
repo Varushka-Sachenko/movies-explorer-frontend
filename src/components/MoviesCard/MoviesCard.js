@@ -3,19 +3,24 @@ import React from 'react'
 
 function MoviesCard(props) {
 
+    const handleClick = () => {
+        props.onClick(props.cardsToAdd)
+    }
+
+
     return (
-        <div className="element">
+        <a href={props.cardsToAdd.trailerLink} className="element">
 
             <div className="element__info">
                 <div className="element__wrap">
-                    <h2 className="element__title">{props.cardsToAdd.name}</h2>
+                    <h2 className="element__title">{props.cardsToAdd.nameRU}</h2>
                     <p className="element__duration">{props.cardsToAdd.duration}</p>
                 </div>
 
-                <button className={props.buttonClass} ></button>
+                <button className={props.buttonClass} onClick={handleClick} ></button>
             </div>
-            <img className="element__image" alt="Обложка фильма" src={props.cardsToAdd.link} />
-        </div>
+            <img alt="обложка фильма" className="element__image" src={`https://api.nomoreparties.co${props.cardsToAdd.image.url}`}/>
+        </a>
     );
 
 }

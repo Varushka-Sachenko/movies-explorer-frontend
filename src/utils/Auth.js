@@ -1,4 +1,5 @@
-export const BASE_URL = 'https://auth.nomoreparties.co';
+
+export const BASE_URL = 'https://api.mesto-cards.nomoredomains.rocks';
 
 const checkResult = (res) => {
   if (res.ok) {
@@ -13,65 +14,86 @@ const changeToJson = (res) => {
 }
 
 
-export const register = (email, password) => {
-    //console.log(email, password)
+export const register = (name, email, password) => {
+  console.log(email, password)
   return fetch(`${BASE_URL}/signup`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      //'Access-Control-Allow-Origin': 'https://api.mesto-cards.nomoredomains.rocks/'
     },
     body: JSON.stringify(({
-        "email": email,
-        "password": password
-      }))
+      "name": name,
+      "email": email,
+      "password": password
+    }))
   })
-  .then((response) => {
-    return checkResult (response)
-  })
-  .then((res) => {
-    return (changeToJson(res))
-  })
-}; 
+    .then((response) => {
+      return checkResult(response)
+    })
+    .then((res) => {
+      console.log(res)
+      return (changeToJson(res))
+    })
+};
 
 export const authorise = (email, password) => {
-    //console.log(email, password)
+  //console.log(email, password)
   return fetch(`${BASE_URL}/signin`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({email, password})
+    body: JSON.stringify({ email, password })
   })
-  .then((response) => {
-    return (checkResult(response))
-  })
-  .then((res) => {
-    return (changeToJson(res))
-  })
-  .then((data) => {
-    if (data.token){
-      localStorage.setItem('token', data.token);
-      //console.log(data)
-      return data;
-    } else {
-      return;
-    }
-   }) 
-}; 
+    .then((response) => {
+      return (checkResult(response))
+    })
+    .then((res) => {
+      return (changeToJson(res))
+    })
+    .then((data) => {
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        //console.log(data)
+        return data;
+      } else {
+        return;
+      }
+    })
+};
 
-export const getContent = (token) => {
-
+export const getOptions = (token) => {
   return fetch(`${BASE_URL}/users/me`, {
+    method: 'OPTIONS',
     headers: {
-        "Content-Type": "application/json",
-        "Authorization" : `Bearer ${token}`
+      "Content-Type": "application/json",
+      'Authorization': token
     },
   })
-  .then((response) => {
-    return (checkResult(response))
+    .then((response) => {
+      return (checkResult(response))
+    })
+    .then((res) => {
+      return (changeToJson(res))
+    })
+};
+
+
+export const getContent = (token) => {
+  console.log(token)
+  return fetch(`${BASE_URL}/users/me`, {
+    method: 'GET',
+    headers: {
+      "Content-Type": "application/json",
+      'Authorization': `Bearer ${token}`
+    },
   })
-  .then((res) => {
-    return (changeToJson(res))
-  })
-}; 
+    .then((response) => {
+      return (checkResult(response))
+    })
+    .then((res) => {
+      return (changeToJson(res))
+    })
+};

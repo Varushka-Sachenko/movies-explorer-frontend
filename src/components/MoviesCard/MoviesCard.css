@@ -7,13 +7,14 @@
     align-items: center;
     padding-right: 5px;
     flex-wrap: wrap-reverse;
+    text-decoration: none;
 
 }
 
 .element__info{
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    justify-content: flex-start;
 }
 
 .element__title{
@@ -95,7 +96,7 @@
         width: 100%;
         flex-wrap: wrap;
         flex-direction: row;
-        ustify-content: space-between;
+        justify-content: space-between;
 
     }
     .element__wrap{

@@ -3,11 +3,11 @@ import SearchForm from '../SearchForm/SearchForm';
 import Preloader from '../Preloader/Preloader';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 function Movies(props) {
+    
     return (
         <section className="movies">
-            <SearchForm />
-            
-            <MoviesCardList cards={props.cards} buttonClass={props.buttonClass}/>
+            <SearchForm onSubmit={props.searchClick} />
+            <MoviesCardList moreClick={props.moreClick} cards={props.cards} buttonClass={props.buttonClass}/>
             <Preloader />
         </section>);
 }

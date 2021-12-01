@@ -21,7 +21,7 @@ function AboutMe(props) {
                         <a href="https://github.com/Varushka-Sachenko" className="about__link">Github</a>
                     </div>
                 </div>
-                <div className="about__left"><img className="avatar" src={avatar} alt="Аватар" ></img></div>
+                <div className="about__left"><img alt="аватар" className="avatar" src={avatar} ></img></div>
                 
             </div>
         </section >

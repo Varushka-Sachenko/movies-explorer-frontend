@@ -23,9 +23,9 @@ export default function InfoTooltip(props) {
         <div className={`popup popup_${props.name} ${statusOpened} `} onClick={closeEventListeners} >
             <div className={`popup__container`}>
                 <button className="popup__close-button" onClick={closePopups} type="button"></button>
-                <div className={`form form_${props.name}`}>
+                <div className={`form form__error form_${props.name}`}>
                     <img className="form__error-image" alt="Изображение модального окна" src={props.image} />
-                    <h2 className="form__text">{props.title}</h2>
+                    <h2 className="form__text form__error-text">{props.title}</h2>
                 </div>
 
             </div>

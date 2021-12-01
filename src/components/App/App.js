@@ -3,14 +3,21 @@
 import React from 'react'
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import * as Auth from '../../utils/Auth'
-import film1 from '../../images/33words.png'
+import union from '../../images/Union.png'
+import error from '../../images/Error.png'
 
-import api from '../../utils/api.js'
+import MoviesApi from '../../utils/MoviesApi.js'
+import MainApi from '../../utils/MainApi.js'
+
 import Header from '../Header/Header0'
 import Header1 from '../Header/Header1'
 import Main from '../Main/Main'
 import HeaderAside from '../Header/HeaderAside'
-
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
+import InfoTooltip from '../Popups/InfoTooltip';
+import MoviesMessage from '../MoviesMessage/MoviesMessage';
+import SearchForm from '../SearchForm/SearchForm';
+import Preloader from '../Preloader/Preloader';
 import Movies from '../Movies/Movies';
 import Footer from '../../components/Footer/Footer'
 import Profile from '../Profile/Profile';
@@ -21,75 +28,84 @@ import Login from '../Login/Login';
 
 function App(props) {
   const history = useHistory();
+  const [token, setToken] = React.useState(localStorage.getItem('token'));
+  const moviesApi = new MoviesApi({
+    adress: 'https://api.nomoreparties.co/beatfilm-movies',
+    token: token
+  })
+
+  const mainApi = new MainApi({
+    adress: 'https://api.mesto-cards.nomoredomains.rocks',
+    token: token
+  })
 
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
   const [isErrorPopupOpened, setIsErrorPopupOpened] = React.useState(false);
   const [isSuccessPopupOpened, setIsSuccessPopupOpened] = React.useState(false);
   const [isAsideOpened, setIsAsideOpened] = React.useState(false);
-
-
-  const [selectedCard, setSelectedCard] = React.useState({ name: "", link: "" });
+  const [isPreloaderOpened, setPreloaderOpened] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [userData, setUserData] = React.useState({});
+  const [movieMes, setMovieMes] = React.useState('Выполни поиск фильма');
+  const [moreVisible, setMoreVisible] = React.useState(true);
+  const [show, setShow] = React.useState(3);
 
   const [currentUser, setCurrentUser] = React.useState(defaultUserInfo);
 
   const [cards, setCards] = React.useState([]);
+  const [foundMovies, setFoundMovies] = React.useState([]);
+  const [savedMovies, setSavedMovies] = React.useState([]);
+  const [showMovies, setShowMovies] = React.useState([]);
 
   const [isLogged, setIsLogged] = React.useState(false);
 
-  const [userData, setUserData] = React.useState({ email: "", password: "" });
-
-  const moviesCards = [
-    {
-      name: "33 слова о дизайне",
-      link: film1,
-      _id: 0,
-      duration: "1ч 42м"
-    },
-    {
-      name: "33 слова о дизайне",
-      link: film1,
-      _id: 0,
-      duration: "1ч 42м"
+  React.useEffect(() => {
+    //console.log('loading')
+    if (isLoading){
+      setPreloaderOpened(true)
+    }else{
+      setPreloaderOpened(false)
     }
-  ]
-
+  }, [isLoading])
 
   React.useEffect(() => {
-    api.getInitialCards()
+    moviesApi.getMovies()
       .then((res) => {
-        const cards = [
-          {
-            name: "33 слова о дизайне",
-            link: film1,
-            _id: 0,
-            duration: "1ч 42м"
-          },
-          {
-            name: "33 слова о дизайне",
-            link: film1,
-            _id: 0,
-            duration: "1ч 42м"
-          }
-        ]
-
-        setCards(cards)
+        setCards(res)
+        setIsLoading(false)
       })
       .catch((err) => {
+        setIsLoading(false)
         console.log(err);
       })
   }, [])
-  React.useEffect(() => {
-    api.loadUserInfo()
-      .then((res) => {
 
-        setCurrentUser(res)
+  React.useEffect(() => {
+    mainApi.getSavedMovies()
+      .then((res) => {
+        setSavedMovies(res)
+        setIsLoading(false)
       })
       .catch((err) => {
+        setIsLoading(false)
         console.log(err);
       })
   }, [])
+
+
+  const signOut = () => {
+
+    localStorage.removeItem('token');
+    setIsLogged(false)
+    history.push('/signin');
+  }
+
+  React.useEffect(() => {
+    tokenCheck()
+  }, [])
+
+
+  
 
   React.useEffect(() => {
     const closeByEscape = (e) => {
@@ -103,15 +119,11 @@ function App(props) {
     return () => document.removeEventListener('keydown', closeByEscape)
   }, [])
 
+
   const handleCardLike = (card) => {
-    //console.log(api.changeLikeCardStatus)
-    // Снова проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
-
     // Отправляем запрос в API и получаем обновлённые данные карточки
-    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
-
-      setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+    mainApi.addSavedMovie(card._id).then((newCard) => {
+      setSavedMovies((state) => state.map((c) => c._id === card._id ? newCard : c));
     }).catch((err) => {
       console.log(err);
     });
@@ -119,10 +131,10 @@ function App(props) {
 
   const handleCardDelete = (card) => {
     if (card.owner._id === currentUser._id) {
-      api.deleteCard(card._id)
+      mainApi.deleteCard(card._id)
         .then(() => {
           const cardsCopy = cards.filter(elem => elem._id !== card._id);
-          setCards(cardsCopy)
+          setSavedMovies(cardsCopy)
         }
         )
         .catch((err) => {
@@ -130,10 +142,6 @@ function App(props) {
         })
     }
 
-
-  }
-  const handleEditAvatarClick = () => {
-    setIsEditAvatarPopupOpen(true)
   }
 
   const handleEditProfileClick = () => {
@@ -141,43 +149,17 @@ function App(props) {
     setIsEditProfilePopupOpen(true)
   }
 
-  const handleAddPlaceClick = () => {
-    setIsAddPlacePopupOpen(true)
-  }
-
   const closeAllPopups = () => {
-    setIsAddPlacePopupOpen(false)
     setIsEditProfilePopupOpen(false)
-    setIsEditAvatarPopupOpen(false)
     setIsErrorPopupOpened(false)
     setIsSuccessPopupOpened(false)
-    setSelectedCard({ name: "", link: "" })
     setIsAsideOpened(false)
   }
 
-  const handleCardClick = (card) => {
-    setSelectedCard(card)
-
-  }
-
-
-
-  const handleUpdateAvatar = (link) => {
-
-    api.changeAvatar(link)
-      .then(() => {
-        setCurrentUser({ ...currentUser, avatar: link.avatar })
-        setIsEditAvatarPopupOpen(false)
-        //console.log(currentUser)
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-
-  }
 
   const handleUpdateUser = (data) => {
-    api.editProfileINfo(data)
+    console.log(data)
+    mainApi.editProfileINfo(data)
       .then((useData) => {
         setCurrentUser(useData)
         setIsEditProfilePopupOpen(false)
@@ -188,45 +170,45 @@ function App(props) {
 
   }
 
-  const handleAddPlaceSubmit = (newCard) => {
-    api.addNewCard(newCard)
-      .then((res) => {
-
-        setCards([res, ...cards]);
-        //console.log(cards)
-        setIsAddPlacePopupOpen(false)
-      }
-
-      )
-      .catch((err) => {
-        console.log(err);
-      })
-
+  const handleFindFilm = (word, isShort) => {
+    setIsLoading(true)
+    //console.log(word)
+    let found = cards.filter(v => v.nameRU.includes(word));
+    
+    if (isShort){
+      found= found.filter(v => v.duration <= 40);
+    }
+    if (found.length === 0){
+      setMovieMes('Ничего не найдено')
+      setMoreVisible(false)
+      console.log(movieMes)
+    }
+    //console.log(cards)
+    setFoundMovies(found) 
+    //console.log(foundMovies)
+    setShowMovies(foundMovies.splice(0, show))
+    //console.log(showMovies)
+    setIsLoading(false)
   }
-
 
   const tokenCheck = () => {
     // если у пользователя есть токен в localStorage,
     // эта функция проверит валидность токена 
-    const token = localStorage.getItem('token');
-
+    console.log('token')
     if (token) {
-      //console.log(token)
-      // проверим токен
+
       Auth.getContent(token)
         .then((res) => {
-          //console.log(res)
           if (res) {
-
             // здесь можем получить данные пользователя!
             setUserData({
-              username: res.username,
+              name: res.name,
               email: res.email
             })
-            //console.log(userData)
             // поместим их в стейт внутри App.js
             setIsLogged(true)
-            history.push("/");
+            history.push("/movies");
+            setIsLoading(true)
           }
         })
         .catch((err) => {
@@ -240,39 +222,73 @@ function App(props) {
     setIsLogged(true)
   }
 
-
-  React.useEffect(() => {
-    tokenCheck()
-  }, [])
-
   const MainComponent = () => {
+    console.log('main')
+    if (isLogged) {
+      return (<>
+        <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
+        <Main />
+        <Footer />
+      </>)
+
+    }
 
     return (<>
       <Header regLink="/signup" signinLink="/signin" />
-      <Main cards={cards} />
+      <Main />
       <Footer />
     </>)
   }
-  
+
+  const handleMoreClick = () => {
+    setShow(show+3);
+    const foundLen = foundMovies.length;
+    if (show < foundLen){
+      setShowMovies( foundMovies.splice(0, show))
+    } else {
+      setShowMovies(foundMovies)
+      setMoreVisible(false)
+    }
+  }
+
 
   const MoviesComponent = (props) => {
+    if (foundMovies.length !== 0) {
+      return (<>
+        <HeaderAside isOpen={isAsideOpened} closeClick={closeAllPopups} />
+        <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
+        <Movies MoreVisible={moreVisible} moreClick={handleMoreClick} searchClick={handleFindFilm} onClick={handleCardLike} cards={showMovies} buttonClass="element__like" />
+        <Footer />
+
+      </>)
+    }
 
     return (<>
-      <HeaderAside isOpen={isAsideOpened} closeClick={closeAllPopups}/>
+      <HeaderAside isOpen={isAsideOpened} closeClick={closeAllPopups} />
       <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
-      <Movies cards={moviesCards} buttonClass="element__like" />
+      <SearchForm onSubmit={handleFindFilm} />
+      <MoviesMessage message={movieMes} />
       <Footer />
 
     </>)
+
+
   }
 
   const SavedMoviesComponent = (props) => {
 
     return (<>
-      <HeaderAside isOpen={isAsideOpened} closeClick={handleAsideChange}/>
+      <HeaderAside isOpen={isAsideOpened} closeClick={handleAsideChange} />
       <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
-      <Movies cards={moviesCards} buttonClass="element__saved" />
+      <Movies MoreVisible={moreVisible} moreClick={handleMoreClick} onClick={handleCardDelete} cards={savedMovies} buttonClass="element__saved" />
       <Footer />
+    </>)
+  }
+
+  const ProfileComponent = (props) => {
+
+    return (<>
+      <Profile onEditProfile={handleEditProfileClick} signOut={signOut} handleUpdateUser={handleUpdateUser} isEditProfilePopupOpen={isEditProfilePopupOpen} closeAllPopups={closeAllPopups} name={userData.name} email={userData.email} isAsideOpened={isAsideOpened} handleAsideChange={handleAsideChange}></Profile>
     </>)
   }
 
@@ -280,39 +296,40 @@ function App(props) {
     setIsAsideOpened(!isAsideOpened)
   }
 
-  const handleSubmitLogin = (e, email, password, setEmail, setPassword) => {
+  const handleSubmitLogin = (e, email, password) => {
     e.preventDefault()
     Auth.authorise(email, password)
       .then((data) => {
         if (data.token) {
-          setUserData({ email, password })
-          setEmail('')
-          setPassword('')
           handleLogin(e)
-
-          history.push('/');
+          setToken(data.token)
+          history.push('/movies');
         }
 
       })
       .catch((err) => {
         console.log(err);
       });
-
-
   }
 
-  const handleSubmitRegister = (e, email, password) => {
+
+  const handleSubmitRegister = (e, name, email, password) => {
+    console.log('err1');
     e.preventDefault()
-    Auth.register(email, password)
+    setIsLoading(true)
+    Auth.register(name, email, password)
       .then((data) => {
         if (data) {
+          setIsLoading(false)
           setIsSuccessPopupOpened(true)
-          history.push('/sign-in')
+          history.push('/signin')
         } else {
+          setIsLoading(false)
           setIsErrorPopupOpened(true)
         }
       })
       .catch((err) => {
+        setIsLoading(false)
         setIsErrorPopupOpened(true)
         console.log(err);
       });
@@ -325,25 +342,43 @@ function App(props) {
       <div className="App">
 
         <div className="page">
+          <InfoTooltip title="Что-то пошло не так! Попробуйте ещё раз." name="modal" isOpen={isErrorPopupOpened} onClose={closeAllPopups} image={error} />
+          <InfoTooltip title="Вы успешно зарегистрировались!" name="modal" isOpen={isSuccessPopupOpened} onClose={closeAllPopups} image={union} />
+          <Preloader isOpen={isPreloaderOpened} />
           <Switch>
 
-            <Route path="/movies">
-              <MoviesComponent />
-            </Route>
-            <Route path="/saved-movies">
-              <SavedMoviesComponent />
-            </Route>
+            <ProtectedRoute
+              path="/movies"
+              loggedIn={isLogged}
+              component={MoviesComponent}
+            />
+            <ProtectedRoute
+              path="/saved-movies"
+              loggedIn={isLogged}
+              component={SavedMoviesComponent}
+            />
+
+            <ProtectedRoute
+              path="/profile"
+              loggedIn={isLogged}
+              component={ProfileComponent}
+            />
             <Route path="/signin">
-              <Login />
+              <Login onSubmit={handleSubmitLogin} />
             </Route>
             <Route path="/signup">
-              <Register />
-            </Route>
-            <Route path="/profile">
-              <Profile name="Варя" email="varushka@ya.ru" isAsideOpened={isAsideOpened} handleAsideChange={handleAsideChange} />
+              
+              <Register onSubmit={handleSubmitRegister} />
             </Route>
             <Route path="/">
               <MainComponent />
+            </Route>
+            <Route>
+              {isLogged ? (
+                <Redirect to="/movies" />
+              ) : (
+                <Redirect to="/signin" />
+              )}
             </Route>
           </Switch>
 

@@ -30,3 +30,7 @@
     transition: .5s;
     opacity: .7;
 }
+
+.not{
+    display: none;
+}
