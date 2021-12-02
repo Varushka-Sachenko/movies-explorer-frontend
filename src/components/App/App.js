@@ -61,9 +61,9 @@ function App(props) {
 
   React.useEffect(() => {
     //console.log('loading')
-    if (isLoading){
+    if (isLoading) {
       setPreloaderOpened(true)
-    }else{
+    } else {
       setPreloaderOpened(false)
     }
   }, [isLoading])
@@ -93,7 +93,7 @@ function App(props) {
   }, [])
 
 
-  
+
 
   React.useEffect(() => {
     const closeByEscape = (e) => {
@@ -162,17 +162,17 @@ function App(props) {
     setIsLoading(true)
     //console.log(word)
     let found = cards.filter(v => v.nameRU.includes(word));
-    
-    if (isShort){
-      found= found.filter(v => v.duration <= 40);
+
+    if (isShort) {
+      found = found.filter(v => v.duration <= 40);
     }
-    if (found.length === 0){
+    if (found.length === 0) {
       setMovieMes('Ничего не найдено')
       setMoreVisible(false)
       console.log(movieMes)
     }
     //console.log(cards)
-    setFoundMovies(found) 
+    setFoundMovies(found)
     //console.log(foundMovies)
     setShowMovies(foundMovies.splice(0, show))
     console.log(showMovies)
@@ -188,22 +188,24 @@ function App(props) {
       Auth.getContent(token)
         .then((res) => {
           if (res) {
+            //console.log(res)
             // здесь можем получить данные пользователя!
-            setUserData({
+            setCurrentUser({
               name: res.name,
               email: res.email
             })
+            
             // поместим их в стейт внутри App.js
             setIsLogged(true)
             mainApi.getSavedMovies()
-            .then((res) => {
-              setSavedMovies(res)
-              setIsLoading(false)
-            })
-            .catch((err) => {
-              setIsLoading(false)
-              console.log(err);
-            })
+              .then((res) => {
+                setSavedMovies(res)
+                setIsLoading(false)
+              })
+              .catch((err) => {
+                setIsLoading(false)
+                console.log(err);
+              })
             history.push("/movies");
             setIsLoading(true)
           }
@@ -238,10 +240,10 @@ function App(props) {
   }
 
   const handleMoreClick = () => {
-    setShow(show+3);
+    setShow(show + 3);
     const foundLen = foundMovies.length;
-    if (show < foundLen){
-      setShowMovies( foundMovies.splice(0, show))
+    if (show < foundLen) {
+      setShowMovies(foundMovies.splice(0, show))
     } else {
       setShowMovies(foundMovies)
       setMoreVisible(false)
@@ -300,7 +302,33 @@ function App(props) {
         if (data.token) {
           handleLogin(e)
           setToken(data.token)
-          history.push('/movies');
+          Auth.getContent(token)
+            .then((res) => {
+              if (res) {
+                // здесь можем получить данные пользователя!
+                setUserData({
+                  name: res.name,
+                  email: res.email
+                })
+                //console.log(userData)
+                // поместим их в стейт внутри App.js
+                setIsLogged(true)
+                mainApi.getSavedMovies()
+                  .then((res) => {
+                    setSavedMovies(res)
+                    setIsLoading(false)
+                  })
+                  .catch((err) => {
+                    setIsLoading(false)
+                    console.log(err);
+                  })
+                history.push("/movies");
+                setIsLoading(true)
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         }
 
       })
@@ -364,7 +392,7 @@ function App(props) {
               <Login onSubmit={handleSubmitLogin} />
             </Route>
             <Route path="/signup">
-              
+
               <Register onSubmit={handleSubmitRegister} />
             </Route>
             <Route path="/">
