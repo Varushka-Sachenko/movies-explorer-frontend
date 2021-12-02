@@ -80,18 +80,6 @@ function App(props) {
       })
   }, [])
 
-  React.useEffect(() => {
-    mainApi.getSavedMovies()
-      .then((res) => {
-        setSavedMovies(res)
-        setIsLoading(false)
-      })
-      .catch((err) => {
-        setIsLoading(false)
-        console.log(err);
-      })
-  }, [])
-
 
   const signOut = () => {
 
@@ -187,7 +175,7 @@ function App(props) {
     setFoundMovies(found) 
     //console.log(foundMovies)
     setShowMovies(foundMovies.splice(0, show))
-    //console.log(showMovies)
+    console.log(showMovies)
     setIsLoading(false)
   }
 
@@ -207,6 +195,15 @@ function App(props) {
             })
             // поместим их в стейт внутри App.js
             setIsLogged(true)
+            mainApi.getSavedMovies()
+            .then((res) => {
+              setSavedMovies(res)
+              setIsLoading(false)
+            })
+            .catch((err) => {
+              setIsLoading(false)
+              console.log(err);
+            })
             history.push("/movies");
             setIsLoading(true)
           }
