@@ -25,9 +25,6 @@ export default class Api {
     getMovies() {
       //console.log('checkapi')
       return fetch(`${this.adress}`, {
-        headers: {
-          authorization: this._token
-        }
       })
         .then(res => {
           return this._checkResult(res)
