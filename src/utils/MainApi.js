@@ -68,7 +68,7 @@ export default class Api {
       },
       body: JSON.stringify({
         name: data.name,
-        about: data.about,
+        email: data.email,
       })
     })
       .then(res => {

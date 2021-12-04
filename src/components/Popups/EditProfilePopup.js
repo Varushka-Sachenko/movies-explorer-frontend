@@ -32,17 +32,12 @@ export default function EditProfilePopup(props) {
           email: email,
         });
       } 
+      
 
     return (
         <PopupWithForm buttonText="Сохранить" onSubmit={handleSubmit} onClose={props.onClose} isOpen={props.isOpen} title="Редактировать профиль" name="field_edit" children={
             <>
-                <input name="name" className="form__field-text form__field-text_input_name form__input-text" placeholder="Имя" type="text"
-                    size="40" id="username" required minLength="2" value={name} maxLength="40" onChange={handleUserName} />
-                <span id="username-error" className="username-error form__input-error"></span>
-
-                <input name="info" className="form__field-text form__field-text_input_job form__input-text" placeholder="Email"
-                    type="email" size="40" id="status" required minLength="2" value={email}  maxLength="200" onChange={handleUserEmail} />
-                <span id="status-error" className="status-error form__input-error"></span>
+                
             </>
         } />
     )

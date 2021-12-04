@@ -32,7 +32,7 @@ export const register = (name, email, password) => {
       return checkResult(response)
     })
     .then((res) => {
-      console.log(res)
+      //console.log(res)
       return (changeToJson(res))
     })
 };

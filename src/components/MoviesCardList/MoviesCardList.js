@@ -7,7 +7,7 @@ function MoviesCardList(props) {
     if (!props.MoreVisible){
         visible = 'not'
     }
-
+    console.log(props.cards)
 
     return (
         <section className="elements">

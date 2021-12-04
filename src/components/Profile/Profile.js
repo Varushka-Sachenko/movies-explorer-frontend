@@ -2,7 +2,7 @@ import React from 'react'
 import { withRouter } from 'react-router-dom';
 import Header from '../Header/Header1';
 import HeaderAside from '../Header/HeaderAside';
-import EditProfilePopup from '../Popups/EditProfilePopup';
+import PopupWithForm from '../Popups/PopupWithForm'
 import { CurrentUserContext} from '../../contexts/CurrentUserContext'
 import { Link } from 'react-router-dom';
 function Profile(props) {
@@ -12,7 +12,7 @@ function Profile(props) {
 
         <>
             <HeaderAside isOpen={props.isAsideOpened} closeClick={props.handleAsideChange}/>
-            <EditProfilePopup onUpdateUser={props.handleUpdateUser} isOpen={props.isEditProfilePopupOpen} onClose={props.closeAllPopups} />
+            <PopupWithForm title="Редактировать профиль" name="field_edit" buttonText="Сохранить" onUpdateUser={props.handleUpdateUser} isOpen={props.isEditProfilePopupOpen} onClose={props.closeAllPopups} />
             <Header isOpen={props.isAsideOpened} asideClick={props.handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
             <section className="profile">
                 <h2 className="profile__header">Привет, {currentUser.name}!</h2>

@@ -17,7 +17,7 @@ function SearchForm(props) {
     return (
         <div>
             <form className="searchForm" onSubmit={handleSubmit}>
-                <input onChange={handleWord} className="form__input" defaultValue="Фильм" required></input>
+                <input onChange={handleWord} className="form__input" placeholder="Фильм" required></input>
                 <button className="form__button"><img alt="поиск" src={search}></img></button>
             </form>
             <div className="switch__box">

@@ -26,6 +26,7 @@ import { CurrentUserContext, defaultUserInfo } from '../../contexts/CurrentUserC
 import Register from '../Register/Register';
 import Login from '../Login/Login';
 
+import { handleFilmsToShow } from './functions';
 function App(props) {
   const history = useHistory();
   const [token, setToken] = React.useState(localStorage.getItem('token'));
@@ -49,14 +50,14 @@ function App(props) {
   const [movieMes, setMovieMes] = React.useState('Выполни поиск фильма');
   const [moreVisible, setMoreVisible] = React.useState(true);
   const [show, setShow] = React.useState(3);
-
+  const [word, setWord] = React.useState('');
   const [currentUser, setCurrentUser] = React.useState(defaultUserInfo);
 
   const [cards, setCards] = React.useState([]);
   const [foundMovies, setFoundMovies] = React.useState([]);
   const [savedMovies, setSavedMovies] = React.useState([]);
-  const [showMovies, setShowMovies] = React.useState([]);
-
+  const [filmCounter, setShowMovies] = React.useState([]);
+  const [isShort, setIsShort] = React.useState(false);
   const [isLogged, setIsLogged] = React.useState(false);
 
   React.useEffect(() => {
@@ -85,7 +86,7 @@ function App(props) {
 
     localStorage.removeItem('token');
     setIsLogged(false)
-    history.push('/signin');
+    history.push('/');
   }
 
   React.useEffect(() => {
@@ -151,18 +152,42 @@ function App(props) {
       .then((useData) => {
         setCurrentUser(useData)
         setIsEditProfilePopupOpen(false)
+        setIsSuccessPopupOpened(true)
       })
       .catch((err) => {
+        setIsEditProfilePopupOpen(false)
+        setIsErrorPopupOpened(true)
         console.log(err);
       });
 
   }
 
-  const handleFindFilm = (word, isShort) => {
-    setIsLoading(true)
-    //console.log(word)
-    let found = cards.filter(v => v.nameRU.includes(word));
+  // const handleFilmsToShow = (filteredFilms, setFilmCounter, setMoreOn, isShortFilm) => {
+  //   const { counter } = show;
+  //   const shortFilms = filteredFilms.filter(film => film.duration <= 40);
+  //   const filmsToShow = isShortFilm ? shortFilms : filteredFilms;
 
+  //   if (filmsToShow.length <= counter) {
+  //     setShowMovies(filmsToShow)
+  //     setMoreOn(false)
+  //   }
+  //   else {
+  //     setFilmCounter(filmsToShow.slice(0, counter))
+  //     setMoreOn(true)
+  //   }
+  // }
+
+  React.useEffect(() => {
+    //console.log(foundMovies)
+    handleFilmsToShow(foundMovies, setShowMovies, setMoreVisible, isShort, show);
+  }, [foundMovies, isShort, setShowMovies, show])
+
+  const handleFindFilm = (word, isShort) => {
+    setIsShort(isShort)
+    setIsLoading(true)
+    word = word.trim().toLowerCase();
+    
+    let found = cards.filter(v => v.nameRU.toLowerCase().includes(word));
     if (isShort) {
       found = found.filter(v => v.duration <= 40);
     }
@@ -171,11 +196,10 @@ function App(props) {
       setMoreVisible(false)
       console.log(movieMes)
     }
-    //console.log(cards)
+    console.log(found)
+
     setFoundMovies(found)
-    //console.log(foundMovies)
-    setShowMovies(foundMovies.splice(0, show))
-    console.log(showMovies)
+    //console.log(filmCounter)
     setIsLoading(false)
   }
 
@@ -194,7 +218,7 @@ function App(props) {
               name: res.name,
               email: res.email
             })
-            
+
             // поместим их в стейт внутри App.js
             setIsLogged(true)
             mainApi.getSavedMovies()
@@ -225,6 +249,7 @@ function App(props) {
     console.log('main')
     if (isLogged) {
       return (<>
+        <HeaderAside isOpen={isAsideOpened} closeClick={closeAllPopups} />
         <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
         <Main />
         <Footer />
@@ -233,6 +258,7 @@ function App(props) {
     }
 
     return (<>
+      <HeaderAside isOpen={isAsideOpened} closeClick={closeAllPopups} />
       <Header regLink="/signup" signinLink="/signin" />
       <Main />
       <Footer />
@@ -251,12 +277,13 @@ function App(props) {
   }
 
 
-  const MoviesComponent = (props) => {
-    if (foundMovies.length !== 0) {
+  const MoviesComponent = () => {
+    console.log(filmCounter)
+    if (filmCounter.length !== 0) {
       return (<>
         <HeaderAside isOpen={isAsideOpened} closeClick={closeAllPopups} />
         <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
-        <Movies MoreVisible={moreVisible} moreClick={handleMoreClick} searchClick={handleFindFilm} onClick={handleCardLike} cards={showMovies} buttonClass="element__like" />
+        <Movies MoreVisible={moreVisible} moreClick={handleMoreClick} searchClick={handleFindFilm} onClick={handleCardLike} cards={filmCounter} buttonClass="element__like" />
         <Footer />
 
       </>)
@@ -287,6 +314,8 @@ function App(props) {
   const ProfileComponent = (props) => {
 
     return (<>
+      <InfoTooltip title="Что-то пошло не так! Попробуйте ещё раз." name="modal" isOpen={isErrorPopupOpened} onClose={closeAllPopups} image={error} />
+      <InfoTooltip title="Запрос выполнен успешно!" name="modal" isOpen={isSuccessPopupOpened} onClose={closeAllPopups} image={union} />
       <Profile onEditProfile={handleEditProfileClick} signOut={signOut} handleUpdateUser={handleUpdateUser} isEditProfilePopupOpen={isEditProfilePopupOpen} closeAllPopups={closeAllPopups} name={userData.name} email={userData.email} isAsideOpened={isAsideOpened} handleAsideChange={handleAsideChange}></Profile>
     </>)
   }
@@ -347,7 +376,7 @@ function App(props) {
         if (data) {
           setIsLoading(false)
           setIsSuccessPopupOpened(true)
-          history.push('/signin')
+          handleSubmitLogin(e, email, password)
         } else {
           setIsLoading(false)
           setIsErrorPopupOpened(true)
@@ -402,7 +431,7 @@ function App(props) {
               {isLogged ? (
                 <Redirect to="/movies" />
               ) : (
-                <Redirect to="/signin" />
+                <Redirect to="/" />
               )}
             </Route>
           </Switch>
