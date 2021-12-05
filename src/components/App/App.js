@@ -110,8 +110,10 @@ function App(props) {
 
 
   const handleCardLike = (card) => {
+    console.log(card)
     // Отправляем запрос в API и получаем обновлённые данные карточки
-    mainApi.addSavedMovie(card._id).then((newCard) => {
+    mainApi.addSavedMovie(card)
+    .then((newCard) => {
       setSavedMovies((state) => state.map((c) => c._id === card._id ? newCard : c));
     }).catch((err) => {
       console.log(err);
@@ -120,9 +122,9 @@ function App(props) {
 
   const handleCardDelete = (card) => {
     if (card.owner._id === currentUser._id) {
-      mainApi.deleteCard(card._id)
+      mainApi.deleteMovie(card._id)
         .then(() => {
-          const cardsCopy = cards.filter(elem => elem._id !== card._id);
+          const cardsCopy = savedMovies.filter(elem => elem._id !== card._id);
           setSavedMovies(cardsCopy)
         }
         )
@@ -179,7 +181,9 @@ function App(props) {
 
   React.useEffect(() => {
     //console.log(foundMovies)
+    console.log(show)
     handleFilmsToShow(foundMovies, setShowMovies, setMoreVisible, isShort, show);
+    console.log(moreVisible)
   }, [foundMovies, isShort, setShowMovies, show])
 
   const handleFindFilm = (word, isShort) => {
@@ -188,9 +192,7 @@ function App(props) {
     word = word.trim().toLowerCase();
     
     let found = cards.filter(v => v.nameRU.toLowerCase().includes(word));
-    if (isShort) {
-      found = found.filter(v => v.duration <= 40);
-    }
+
     if (found.length === 0) {
       setMovieMes('Ничего не найдено')
       setMoreVisible(false)
@@ -267,13 +269,6 @@ function App(props) {
 
   const handleMoreClick = () => {
     setShow(show + 3);
-    const foundLen = foundMovies.length;
-    if (show < foundLen) {
-      setShowMovies(foundMovies.splice(0, show))
-    } else {
-      setShowMovies(foundMovies)
-      setMoreVisible(false)
-    }
   }
 
 
@@ -306,7 +301,7 @@ function App(props) {
     return (<>
       <HeaderAside isOpen={isAsideOpened} closeClick={handleAsideChange} />
       <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
-      <Movies MoreVisible={moreVisible} moreClick={handleMoreClick} onClick={handleCardDelete} cards={savedMovies} buttonClass="element__saved" />
+      <Movies searchClick={handleFindFilm} MoreVisible={false} moreClick={handleMoreClick} onClick={handleCardDelete} cards={savedMovies} buttonClass="element__saved" />
       <Footer />
     </>)
   }

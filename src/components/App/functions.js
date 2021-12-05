@@ -1,5 +1,6 @@
 export const handleFilmsToShow = (filteredFilms, setFilmCounter, setMoreOn, isShortFilm, show) => {
-    const { counter } = show;
+    //console.log(show)
+    const counter = show;
     const shortFilms = filteredFilms.filter(film => film.duration <= 40);
     const filmsToShow = isShortFilm ? shortFilms : filteredFilms;
 
@@ -8,7 +9,8 @@ export const handleFilmsToShow = (filteredFilms, setFilmCounter, setMoreOn, isSh
         setMoreOn(false)
     }
     else {
-        setFilmCounter(filmsToShow.slice(0, counter))
+        const res = filmsToShow.slice(0, counter)
+        setFilmCounter(res)
         setMoreOn(true)
     }
 }

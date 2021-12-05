@@ -7,6 +7,7 @@ function MoviesCardList(props) {
     if (!props.MoreVisible){
         visible = 'not'
     }
+    console.log(props.onClick)
     console.log(props.cards)
 
     return (

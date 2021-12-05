@@ -81,13 +81,14 @@ export default class Api {
   }
 
   addSavedMovie(data) {
+    console.log({...data, image: `https://api.nomoreparties.co${data.image.url}`})
     return fetch(`${this.adress}/movies`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${this._token}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify({...data, image: `https://api.nomoreparties.co${data.image.url}`})
     })
       .then(res => {
         return this._checkResult(res)
