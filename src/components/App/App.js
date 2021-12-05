@@ -148,6 +148,7 @@ function App(props) {
   }
 
 
+
   const handleUpdateUser = (data) => {
     console.log(data)
     mainApi.editProfileINfo(data)
@@ -164,26 +165,10 @@ function App(props) {
 
   }
 
-  // const handleFilmsToShow = (filteredFilms, setFilmCounter, setMoreOn, isShortFilm) => {
-  //   const { counter } = show;
-  //   const shortFilms = filteredFilms.filter(film => film.duration <= 40);
-  //   const filmsToShow = isShortFilm ? shortFilms : filteredFilms;
-
-  //   if (filmsToShow.length <= counter) {
-  //     setShowMovies(filmsToShow)
-  //     setMoreOn(false)
-  //   }
-  //   else {
-  //     setFilmCounter(filmsToShow.slice(0, counter))
-  //     setMoreOn(true)
-  //   }
-  // }
-
   React.useEffect(() => {
     //console.log(foundMovies)
     console.log(show)
     handleFilmsToShow(foundMovies, setShowMovies, setMoreVisible, isShort, show);
-    console.log(moreVisible)
   }, [foundMovies, isShort, setShowMovies, show])
 
   const handleFindFilm = (word, isShort) => {
