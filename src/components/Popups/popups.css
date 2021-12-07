@@ -139,6 +139,11 @@
     opacity: 0.2;
 }
 
+.inactive:hover{
+    opacity: 0.2;
+    cursor: default;
+}
+
 .form__input-error{
     max-width: 80%;
     text-align: start;

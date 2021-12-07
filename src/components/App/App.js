@@ -21,6 +21,7 @@ import Preloader from '../Preloader/Preloader';
 import Movies from '../Movies/Movies';
 import Footer from '../../components/Footer/Footer'
 import Profile from '../Profile/Profile';
+import PageNotFound from '../PageNotFound/PageNotFound'
 
 import { CurrentUserContext, defaultUserInfo } from '../../contexts/CurrentUserContext';
 import Register from '../Register/Register';
@@ -46,19 +47,18 @@ function App(props) {
   const [isAsideOpened, setIsAsideOpened] = React.useState(false);
   const [isPreloaderOpened, setPreloaderOpened] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [userData, setUserData] = React.useState({});
-  const [movieMes, setMovieMes] = React.useState('Выполни поиск фильма');
+
+  const [movieMes, setMovieMes] = React.useState('');
   const [moreVisible, setMoreVisible] = React.useState(true);
   const [show, setShow] = React.useState(3);
-  const [word, setWord] = React.useState('');
   const [currentUser, setCurrentUser] = React.useState(defaultUserInfo);
-
   const [cards, setCards] = React.useState([]);
   const [foundMovies, setFoundMovies] = React.useState([]);
   const [savedMovies, setSavedMovies] = React.useState([]);
   const [filmCounter, setShowMovies] = React.useState([]);
   const [isShort, setIsShort] = React.useState(false);
   const [isLogged, setIsLogged] = React.useState(false);
+  const [searchSaved, setSaved] = React.useState(savedMovies);
 
   React.useEffect(() => {
     //console.log('loading')
@@ -109,31 +109,39 @@ function App(props) {
   }, [])
 
 
-  const handleCardLike = (card) => {
+  const handleCardClick = (card, isLiked) => {
+    console.log(isLiked)
+    if (isLiked) {
+      if (card.owner._id === currentUser._id) {
+        mainApi.deleteMovie(card._id)
+          .then(() => {
+            const cardsCopy = savedMovies.filter(elem => elem._id !== card._id);
+            setSavedMovies(cardsCopy)
+          }
+          )
+          .catch((err) => {
+            console.log(err);
+          })
+      }
+
+    } else {
+      if (!savedMovies.includes(card)) {
+        console.log(card)
+        mainApi.addSavedMovie(card)
+          .then((newCard) => {
+            setSavedMovies((state) => state.map((c) => c._id === card._id ? newCard : c));
+          }).catch((err) => {
+            console.log(err);
+          });
+      }
+
+
+    }
     console.log(card)
     // Отправляем запрос в API и получаем обновлённые данные карточки
-    mainApi.addSavedMovie(card)
-    .then((newCard) => {
-      setSavedMovies((state) => state.map((c) => c._id === card._id ? newCard : c));
-    }).catch((err) => {
-      console.log(err);
-    });
-  }
-
-  const handleCardDelete = (card) => {
-    if (card.owner._id === currentUser._id) {
-      mainApi.deleteMovie(card._id)
-        .then(() => {
-          const cardsCopy = savedMovies.filter(elem => elem._id !== card._id);
-          setSavedMovies(cardsCopy)
-        }
-        )
-        .catch((err) => {
-          console.log(err);
-        })
-    }
 
   }
+
 
   const handleEditProfileClick = () => {
     // console.log('click')
@@ -150,32 +158,44 @@ function App(props) {
 
 
   const handleUpdateUser = (data) => {
-    console.log(data)
-    mainApi.editProfileINfo(data)
-      .then((useData) => {
-        setCurrentUser(useData)
-        setIsEditProfilePopupOpen(false)
-        setIsSuccessPopupOpened(true)
-      })
-      .catch((err) => {
-        setIsEditProfilePopupOpen(false)
-        setIsErrorPopupOpened(true)
-        console.log(err);
-      });
+
+    if (data.name !== currentUser.name && data.email !== currentUser.email) {
+      mainApi.editProfileINfo(data)
+        .then((useData) => {
+          setCurrentUser(useData)
+          setIsEditProfilePopupOpen(false)
+            .then(() => {
+              setIsSuccessPopupOpened(true)
+            })
+
+        })
+        .catch((err) => {
+          setIsEditProfilePopupOpen(false)
+          setIsErrorPopupOpened(true)
+          console.log(err);
+        });
+
+    } else {
+      setIsEditProfilePopupOpen(false)
+      setIsSuccessPopupOpened(true)
+    }
+
+
+
 
   }
 
   React.useEffect(() => {
     //console.log(foundMovies)
-    console.log(show)
     handleFilmsToShow(foundMovies, setShowMovies, setMoreVisible, isShort, show);
   }, [foundMovies, isShort, setShowMovies, show])
 
   const handleFindFilm = (word, isShort) => {
     setIsShort(isShort)
     setIsLoading(true)
+    console.log(isLoading)
     word = word.trim().toLowerCase();
-    
+
     let found = cards.filter(v => v.nameRU.toLowerCase().includes(word));
 
     if (found.length === 0) {
@@ -183,12 +203,52 @@ function App(props) {
       setMoreVisible(false)
       console.log(movieMes)
     }
-    console.log(found)
+    //console.log(found)
 
     setFoundMovies(found)
     //console.log(filmCounter)
     setIsLoading(false)
   }
+
+  React.useEffect(() => {
+    //console.log(foundMovies)
+    handleFilmsToShow(searchSaved, setShowMovies, setMoreVisible, isShort, 100);
+  }, [searchSaved, setShowMovies, isShort])
+
+  const handleFindSaved = (word, isShort) => {
+    setIsShort(isShort)
+    setIsLoading(true)
+    console.log(isLoading)
+    word = word.trim().toLowerCase();
+
+    let found = savedMovies.filter(v => v.nameRU.toLowerCase().includes(word));
+
+    if (found.length === 0) {
+      setMovieMes('Ничего не найдено')
+      console.log(movieMes)
+    }
+    //console.log(found)
+
+    setSaved(found)
+    //console.log(filmCounter)
+    setIsLoading(false)
+  }
+
+
+  React.useEffect(() => {
+    if (isLogged) {
+      mainApi.getSavedMovies()
+        .then((res) => {
+          setSavedMovies(res)
+          setIsLoading(false)
+        })
+        .catch((err) => {
+          setIsLoading(false)
+          console.log(err);
+        })
+    }
+
+  }, [isLogged])
 
   const tokenCheck = () => {
     // если у пользователя есть токен в localStorage,
@@ -208,15 +268,6 @@ function App(props) {
 
             // поместим их в стейт внутри App.js
             setIsLogged(true)
-            mainApi.getSavedMovies()
-              .then((res) => {
-                setSavedMovies(res)
-                setIsLoading(false)
-              })
-              .catch((err) => {
-                setIsLoading(false)
-                console.log(err);
-              })
             history.push("/movies");
             setIsLoading(true)
           }
@@ -233,7 +284,6 @@ function App(props) {
   }
 
   const MainComponent = () => {
-    console.log('main')
     if (isLogged) {
       return (<>
         <HeaderAside isOpen={isAsideOpened} closeClick={closeAllPopups} />
@@ -258,18 +308,18 @@ function App(props) {
 
 
   const MoviesComponent = () => {
-    console.log(filmCounter)
     if (filmCounter.length !== 0) {
       return (<>
         <HeaderAside isOpen={isAsideOpened} closeClick={closeAllPopups} />
         <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
-        <Movies MoreVisible={moreVisible} moreClick={handleMoreClick} searchClick={handleFindFilm} onClick={handleCardLike} cards={filmCounter} buttonClass="element__like" />
+        <Movies savedCards={savedMovies} MoreVisible={moreVisible} moreClick={handleMoreClick} searchClick={handleFindFilm} onClick={handleCardClick} cards={filmCounter} buttonClass="element__like" />
         <Footer />
 
       </>)
     }
 
     return (<>
+
       <HeaderAside isOpen={isAsideOpened} closeClick={closeAllPopups} />
       <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
       <SearchForm onSubmit={handleFindFilm} />
@@ -282,21 +332,30 @@ function App(props) {
   }
 
   const SavedMoviesComponent = (props) => {
+    if (searchSaved.length === 0) {
+      return (<>
+        <HeaderAside isOpen={isAsideOpened} closeClick={handleAsideChange} />
+        <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
+        <Movies savedCards={savedMovies} searchClick={handleFindSaved} MoreVisible={false} moreClick={handleMoreClick} onClick={handleCardClick} cards={savedMovies} buttonClass="element__saved" />
+        <MoviesMessage message={movieMes} />
+        <Footer />
+      </>)
 
+    }
     return (<>
       <HeaderAside isOpen={isAsideOpened} closeClick={handleAsideChange} />
       <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
-      <Movies searchClick={handleFindFilm} MoreVisible={false} moreClick={handleMoreClick} onClick={handleCardDelete} cards={savedMovies} buttonClass="element__saved" />
+      <Movies savedCards={searchSaved} searchClick={handleFindSaved} MoreVisible={false} moreClick={handleMoreClick} onClick={handleCardClick} cards={searchSaved} buttonClass="element__saved" />
       <Footer />
     </>)
+
+
   }
 
   const ProfileComponent = (props) => {
 
     return (<>
-      <InfoTooltip title="Что-то пошло не так! Попробуйте ещё раз." name="modal" isOpen={isErrorPopupOpened} onClose={closeAllPopups} image={error} />
-      <InfoTooltip title="Запрос выполнен успешно!" name="modal" isOpen={isSuccessPopupOpened} onClose={closeAllPopups} image={union} />
-      <Profile onEditProfile={handleEditProfileClick} signOut={signOut} handleUpdateUser={handleUpdateUser} isEditProfilePopupOpen={isEditProfilePopupOpen} closeAllPopups={closeAllPopups} name={userData.name} email={userData.email} isAsideOpened={isAsideOpened} handleAsideChange={handleAsideChange}></Profile>
+      <Profile onEditProfile={handleEditProfileClick} signOut={signOut} handleUpdateUser={handleUpdateUser} isEditProfilePopupOpen={isEditProfilePopupOpen} closeAllPopups={closeAllPopups} name={currentUser.name} email={currentUser.email} isAsideOpened={isAsideOpened} handleAsideChange={handleAsideChange}></Profile>
     </>)
   }
 
@@ -315,7 +374,7 @@ function App(props) {
             .then((res) => {
               if (res) {
                 // здесь можем получить данные пользователя!
-                setUserData({
+                setCurrentUser({
                   name: res.name,
                   email: res.email
                 })
@@ -377,15 +436,17 @@ function App(props) {
 
         <div className="page">
           <InfoTooltip title="Что-то пошло не так! Попробуйте ещё раз." name="modal" isOpen={isErrorPopupOpened} onClose={closeAllPopups} image={error} />
-          <InfoTooltip title="Вы успешно зарегистрировались!" name="modal" isOpen={isSuccessPopupOpened} onClose={closeAllPopups} image={union} />
+          <InfoTooltip title="Запрос выполнен успешно!" name="modal" isOpen={isSuccessPopupOpened} onClose={closeAllPopups} image={union} />
           <Preloader isOpen={isPreloaderOpened} />
           <Switch>
+          
 
             <ProtectedRoute
               path="/movies"
               loggedIn={isLogged}
               component={MoviesComponent}
             />
+            
             <ProtectedRoute
               path="/saved-movies"
               loggedIn={isLogged}
@@ -397,6 +458,7 @@ function App(props) {
               loggedIn={isLogged}
               component={ProfileComponent}
             />
+            
             <Route path="/signin">
               <Login onSubmit={handleSubmitLogin} />
             </Route>
@@ -407,6 +469,10 @@ function App(props) {
             <Route path="/">
               <MainComponent />
             </Route>
+            
+            <Route path="*">
+              <PageNotFound />
+            </Route>
             <Route>
               {isLogged ? (
                 <Redirect to="/movies" />
@@ -414,6 +480,7 @@ function App(props) {
                 <Redirect to="/" />
               )}
             </Route>
+            
           </Switch>
 
         </div>

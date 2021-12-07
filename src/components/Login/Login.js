@@ -55,11 +55,11 @@ function Login(props) {
                 <label className="form__label">Email</label>
                 <input value={email} onChange={handleUserEmail} name="email" className="form__field-text form__field-text_input_name form__field-text_login" placeholder="Email" type="email"
                     size="40" required minLength="2" maxLength="40" />
-                <span id="username-error" className="username-error form__input-error"></span>
+                <span id="username-error" className="username-error form__input-error">{errors.email}</span>
                 <label className="form__label">Пароль</label>
                 <input value={password} onChange={handleUserPassword} name="password" className="form__field-text form__field-text_input_job form__field-text_login" placeholder="Пароль"
                     type="password" size="40" required minLength="2" maxLength="200" />
-                <span id="status-error" className="status-error form__input-error"></span>
+                <span id="status-error" className="status-error form__input-error">{errors.password}</span>
                 <button type="submit" className={`form__save-button form__save-button_login ${inactive}`}>Войти</button>
                 <p className="form__under-button-text">Еще не зарегистрированы? <Link className="form__under-button-link" to="/signup">Регистрация</Link></p>
             </form>

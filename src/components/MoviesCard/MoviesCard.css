@@ -56,7 +56,19 @@
     margin-bottom: 22px;
 }
 
-.element__like:active{
+.like_active{
+    background-image: url(../../images/likeActive.png);
+    width: 14px;
+    height: 12px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    background-color: transparent;
+    margin-top: 30px;
+    margin-bottom: 22px;
+}
+
+.like_active{
     background-image: url(../../images/likeActive.png);
     width: 14px;
     height: 12px;

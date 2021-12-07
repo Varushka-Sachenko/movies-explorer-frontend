@@ -7,14 +7,12 @@ function MoviesCardList(props) {
     if (!props.MoreVisible){
         visible = 'not'
     }
-    console.log(props.onClick)
-    console.log(props.cards)
 
     return (
         <section className="elements">
 
             {props.cards.map((element) => {
-                return (<MoviesCard onClick={props.onClick} key={element._id} cardsToAdd={element} buttonClass={props.buttonClass}/>)
+                return (<MoviesCard savedCards={props.savedCards} onClick={props.onClick} key={element._id} cardsToAdd={element} buttonClass={props.buttonClass}/>)
             })}
             <button onClick={props.moreClick} className={`pre__button ${visible}`}>Ещё</button>
         </section>

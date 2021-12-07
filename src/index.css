@@ -34,6 +34,7 @@
 @import url(./components/Profile/Profile.css);
 @import url(./components/Popups/popups.css);
 @import url(./components/MoviesMessage/MoviesMessage.css);
+@import url(./components/PageNotFound/PageNotFound.css);
 /* @import url(./blocks/profile/profile.css);
 @import url(./blocks/profile/__name/profile__name.css);
 @import url(./blocks/profile/__status/profile__status.css);
