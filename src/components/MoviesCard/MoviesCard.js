@@ -2,28 +2,27 @@ import React from 'react'
 
 
 function MoviesCard(props) {
-    let isLiked = ((props.savedCards.includes(props.cardsToAdd)));
-    console.log(isLiked)
+    let isLiked = false;
+    props.savedCards.forEach(i => {
+        //console.log(i.nameRU, props.cardsToAdd.nameRU, i.nameRU === props.cardsToAdd.nameRU)
+        if (i.nameRU === props.cardsToAdd.nameRU){
+            isLiked = true
+        }
+    });
+    
     const handleClick = () => {
         props.onClick(props.cardsToAdd, isLiked)
-        isLiked = !isLiked
-        likedStatus = 'like_active'
-        console.log(likedStatus)
-    }
-    let likedStatus ='';
-    if (isLiked){
-        likedStatus = 'like_active'
-    }
 
-    let image= props.cardsToAdd.image.url
+    }
+    const cardLikeButtonClassName = `${props.buttonClass} ${isLiked ? 'like_active' : ''}`;
 
-    if (props.buttonClass !== 'element__like'){
-        image = props.cardsToAdd.image;
-    } else {
+    let image= props.cardsToAdd.image
+
+    if (props.buttonClass === 'element__like'){
         image = `https://api.nomoreparties.co${props.cardsToAdd.image.url}`
     }
 
-
+    console.log(cardLikeButtonClassName)
     return (
         <div className="element">
             <div className="element__info">
@@ -32,7 +31,7 @@ function MoviesCard(props) {
                     <p className="element__duration">{props.cardsToAdd.duration}</p>
                 </div>
 
-                <button className={`${props.buttonClass} ${isLiked ? 'like_active' : ''}`} onClick={handleClick} ></button>
+                <button className={cardLikeButtonClassName} onClick={handleClick} ></button>
             </div>
             <a href={props.cardsToAdd.trailerLink}>
                 <img alt="обложка фильма" className="element__image" src={`${image}`} />

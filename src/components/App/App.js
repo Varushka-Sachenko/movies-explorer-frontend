@@ -47,7 +47,7 @@ function App(props) {
   const [isAsideOpened, setIsAsideOpened] = React.useState(false);
   const [isPreloaderOpened, setPreloaderOpened] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
-
+  const [isCheckingToken, setIsCheckingToken] = React.useState(true)
   const [movieMes, setMovieMes] = React.useState('');
   const [moreVisible, setMoreVisible] = React.useState(true);
   const [show, setShow] = React.useState(3);
@@ -58,7 +58,7 @@ function App(props) {
   const [filmCounter, setShowMovies] = React.useState([]);
   const [isShort, setIsShort] = React.useState(false);
   const [isLogged, setIsLogged] = React.useState(false);
-  const [searchSaved, setSaved] = React.useState(savedMovies);
+  const [searchSaved, setSaved] = React.useState([]);
 
   React.useEffect(() => {
     //console.log('loading')
@@ -110,26 +110,38 @@ function App(props) {
 
 
   const handleCardClick = (card, isLiked) => {
-    console.log(isLiked)
+    console.log(card)
     if (isLiked) {
-      if (card.owner._id === currentUser._id) {
-        mainApi.deleteMovie(card._id)
-          .then(() => {
-            const cardsCopy = savedMovies.filter(elem => elem._id !== card._id);
-            setSavedMovies(cardsCopy)
-          }
-          )
-          .catch((err) => {
-            console.log(err);
-          })
-      }
+      savedMovies.forEach(i => {
+        //console.log(i.nameRU, props.cardsToAdd.nameRU, i.nameRU === props.cardsToAdd.nameRU)
+        if (i.nameRU === card.nameRU) {
+          card._id = i._id
+        }
+      });
+      mainApi.deleteMovie(card._id)
+        .then(() => {
+          const cardsCopy = savedMovies.filter(elem => elem._id !== card._id);
+          setSavedMovies(cardsCopy)
+        }
+        )
+        .catch((err) => {
+          console.log(err);
+        })
 
     } else {
-      if (!savedMovies.includes(card)) {
+      let inSaved = false;
+      savedMovies.forEach(i => {
+        //console.log(i.nameRU, props.cardsToAdd.nameRU, i.nameRU === props.cardsToAdd.nameRU)
+        if (i.nameRU === card.nameRU) {
+          inSaved = true
+        }
+      });
+      if (!inSaved) {
         console.log(card)
         mainApi.addSavedMovie(card)
           .then((newCard) => {
-            setSavedMovies((state) => state.map((c) => c._id === card._id ? newCard : c));
+            console.log(newCard)
+            setSavedMovies([newCard.data, ...savedMovies]);
           }).catch((err) => {
             console.log(err);
           });
@@ -188,7 +200,7 @@ function App(props) {
   React.useEffect(() => {
     //console.log(foundMovies)
     handleFilmsToShow(foundMovies, setShowMovies, setMoreVisible, isShort, show);
-  }, [foundMovies, isShort, setShowMovies, show])
+  }, [foundMovies, isShort, setShowMovies, show, savedMovies])
 
   const handleFindFilm = (word, isShort) => {
     setIsShort(isShort)
@@ -255,7 +267,6 @@ function App(props) {
     // эта функция проверит валидность токена 
     console.log('token')
     if (token) {
-
       Auth.getContent(token)
         .then((res) => {
           if (res) {
@@ -271,6 +282,9 @@ function App(props) {
             history.push("/movies");
             setIsLoading(true)
           }
+        })
+        .finally(() => {
+          setIsCheckingToken(false);
         })
         .catch((err) => {
           console.log(err);
@@ -336,8 +350,9 @@ function App(props) {
       return (<>
         <HeaderAside isOpen={isAsideOpened} closeClick={handleAsideChange} />
         <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
-        <Movies savedCards={savedMovies} searchClick={handleFindSaved} MoreVisible={false} moreClick={handleMoreClick} onClick={handleCardClick} cards={savedMovies} buttonClass="element__saved" />
         <MoviesMessage message={movieMes} />
+        <Movies savedCards={savedMovies} searchClick={handleFindSaved} MoreVisible={false} moreClick={handleMoreClick} onClick={handleCardClick} cards={savedMovies} buttonClass="element__saved" />
+        
         <Footer />
       </>)
 
@@ -439,26 +454,6 @@ function App(props) {
           <InfoTooltip title="Запрос выполнен успешно!" name="modal" isOpen={isSuccessPopupOpened} onClose={closeAllPopups} image={union} />
           <Preloader isOpen={isPreloaderOpened} />
           <Switch>
-          
-
-            <ProtectedRoute
-              path="/movies"
-              loggedIn={isLogged}
-              component={MoviesComponent}
-            />
-            
-            <ProtectedRoute
-              path="/saved-movies"
-              loggedIn={isLogged}
-              component={SavedMoviesComponent}
-            />
-
-            <ProtectedRoute
-              path="/profile"
-              loggedIn={isLogged}
-              component={ProfileComponent}
-            />
-            
             <Route path="/signin">
               <Login onSubmit={handleSubmitLogin} />
             </Route>
@@ -466,13 +461,35 @@ function App(props) {
 
               <Register onSubmit={handleSubmitRegister} />
             </Route>
+            <ProtectedRoute
+              path="/saved-movies"
+              loggedIn={isLogged}
+              component={SavedMoviesComponent}
+              isCheckingToken={isCheckingToken}
+            />
+
+            <ProtectedRoute
+              path="/profile"
+              loggedIn={isLogged}
+              component={ProfileComponent}
+              isCheckingToken={isCheckingToken}
+            />
+            <ProtectedRoute
+              path="/movies"
+              loggedIn={isLogged}
+              component={MoviesComponent}
+              isCheckingToken={isCheckingToken}
+            />
+
+
             <Route path="/">
               <MainComponent />
             </Route>
-            
             <Route path="*">
               <PageNotFound />
             </Route>
+
+
             <Route>
               {isLogged ? (
                 <Redirect to="/movies" />
@@ -480,7 +497,8 @@ function App(props) {
                 <Redirect to="/" />
               )}
             </Route>
-            
+
+
           </Switch>
 
         </div>
