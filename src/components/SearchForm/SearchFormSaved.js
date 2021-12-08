@@ -2,19 +2,11 @@ import React from 'react'
 import search from '../../images/find.png'
 
 function SearchForm(props) {
-    let wordMean = ''
-    if (props.buttonClass === 'element__saved'){
-        wordMean='wordSaved';
-    } else{
-        wordMean='word'
-    }
-    
-    const [word, setWord] = React.useState(localStorage.getItem(wordMean));
+    const [word, setWord] = React.useState('');
     const [isShort, setShort] = React.useState(false);
     function handleSubmit (e){
         //console.log('word', word)
         props.onSubmit(word, isShort)
-        localStorage.setItem("word", word)
     }
     function handleWord(e) {
         setWord(e.target.value);

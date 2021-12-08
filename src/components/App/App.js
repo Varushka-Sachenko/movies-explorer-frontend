@@ -22,6 +22,7 @@ import Movies from '../Movies/Movies';
 import Footer from '../../components/Footer/Footer'
 import Profile from '../Profile/Profile';
 import PageNotFound from '../PageNotFound/PageNotFound'
+import MoviesSaved from '../Movies/MoviesSaved';
 
 import { CurrentUserContext, defaultUserInfo } from '../../contexts/CurrentUserContext';
 import Register from '../Register/Register';
@@ -30,15 +31,14 @@ import Login from '../Login/Login';
 import { handleFilmsToShow } from './functions';
 function App(props) {
   const history = useHistory();
-  const [token, setToken] = React.useState(localStorage.getItem('token'));
   const moviesApi = new MoviesApi({
     adress: 'https://api.nomoreparties.co/beatfilm-movies',
-    token: token
+    token: localStorage.getItem('token')
   })
 
   const mainApi = new MainApi({
     adress: 'https://api.mesto-cards.nomoredomains.rocks',
-    token: token
+    token: localStorage.getItem('token')
   })
 
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
@@ -57,7 +57,7 @@ function App(props) {
   const [savedMovies, setSavedMovies] = React.useState([]);
   const [filmCounter, setShowMovies] = React.useState([]);
   const [isShort, setIsShort] = React.useState(false);
-  const [isLogged, setIsLogged] = React.useState(false);
+  const [isLogged, setIsLogged] = React.useState('checking');
   const [searchSaved, setSaved] = React.useState([]);
 
   React.useEffect(() => {
@@ -88,12 +88,12 @@ function App(props) {
     localStorage.removeItem("isLogged")
     localStorage.removeItem("word")
     localStorage.removeItem("foundMovies")
-    //localStorage.removeItem("searchSaved")
-    setCurrentUser(defaultUserInfo)
+    setCurrentUser('')
     setFoundMovies([])
     setSavedMovies([])
     setShowMovies([])
-    setIsLogged(false)
+    // setToken('')
+    setIsLogged('false')
     history.push('/');
   }
 
@@ -200,6 +200,7 @@ function App(props) {
   }
 
   React.useEffect(() => {
+    console.log(foundMovies)
     handleFilmsToShow(foundMovies, setShowMovies, setMoreVisible, isShort, show);
   }, [foundMovies, isShort, setShowMovies, show, savedMovies])
 
@@ -243,8 +244,6 @@ function App(props) {
       console.log(movieMes)
     }
     //console.log(found)
-    // localStorage.setItem('wordSaved', word)
-    // localStorage.setItem("searchSaved", JSON.stringify(found))
 
     setSaved(found)
     //console.log(filmCounter)
@@ -268,9 +267,10 @@ function App(props) {
   }, [isLogged])
 
   const tokenCheck = () => {
+    setIsLogged('checking')
+    const token = localStorage.getItem('token')
     // если у пользователя есть токен в localStorage,
     // эта функция проверит валидность токена 
-    console.log('token')
     if (token) {
       Auth.getContent(token)
         .then((res) => {
@@ -284,37 +284,31 @@ function App(props) {
             if (localStorage.getItem('foundMovies')) {
               console.log(localStorage.getItem('foundMovies'))
               setFoundMovies(JSON.parse(localStorage.getItem('foundMovies')))
-              
             }
-            // if (localStorage.getItem('searchSaved')) {
-            //   setSaved(JSON.parse(localStorage.getItem('searchSaved')))
-            // }
 
 
             // поместим их в стейт внутри App.js
-            setIsLogged(true)
-            
-            history.push("/movies");
+            setIsLogged('true')
+
+            //history.push("/movies");
             setIsLoading(true)
           }
-        })
-        .finally(() => {
-          localStorage.setItem("isLogged", true)
-          setIsCheckingToken(false);
         })
         .catch((err) => {
           console.log(err);
         });
+    } else {
+      setIsLogged('false')
     }
   }
 
   const handleLogin = (e) => {
     e.preventDefault();
-    setIsLogged(true)
+    setIsLogged('true')
   }
 
   const MainComponent = () => {
-    if (isLogged) {
+    if (isLogged === 'true') {
       return (<>
         <HeaderAside isOpen={isAsideOpened} closeClick={closeAllPopups} />
         <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
@@ -367,7 +361,7 @@ function App(props) {
         <HeaderAside isOpen={isAsideOpened} closeClick={handleAsideChange} />
         <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
         <MoviesMessage message={movieMes} />
-        <Movies savedCards={savedMovies} searchClick={handleFindSaved} MoreVisible={false} moreClick={handleMoreClick} onClick={handleCardClick} cards={savedMovies} buttonClass="element__saved" />
+        <MoviesSaved savedCards={savedMovies} searchClick={handleFindSaved} MoreVisible={false} moreClick={handleMoreClick} onClick={handleCardClick} cards={savedMovies} buttonClass="element__saved" />
 
         <Footer />
       </>)
@@ -376,7 +370,7 @@ function App(props) {
     return (<>
       <HeaderAside isOpen={isAsideOpened} closeClick={handleAsideChange} />
       <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
-      <Movies savedCards={searchSaved} searchClick={handleFindSaved} MoreVisible={false} moreClick={handleMoreClick} onClick={handleCardClick} cards={searchSaved} buttonClass="element__saved" />
+      <MoviesSaved savedCards={searchSaved} searchClick={handleFindSaved} MoreVisible={false} moreClick={handleMoreClick} onClick={handleCardClick} cards={searchSaved} buttonClass="element__saved" />
       <Footer />
     </>)
 
@@ -400,8 +394,8 @@ function App(props) {
       .then((data) => {
         if (data.token) {
           handleLogin(e)
-          setToken(data.token)
-          Auth.getContent(token)
+          //setToken(data.token)
+          Auth.getContent(data.token)
             .then((res) => {
               if (res) {
                 // здесь можем получить данные пользователя!
@@ -411,7 +405,7 @@ function App(props) {
                 })
                 //console.log(userData)
                 // поместим их в стейт внутри App.js
-                setIsLogged(true)
+                setIsLogged('true')
                 mainApi.getSavedMovies()
                   .then((res) => {
                     setSavedMovies(res)
@@ -446,11 +440,8 @@ function App(props) {
         if (data) {
           setIsLoading(false)
           setIsSuccessPopupOpened(true)
+          setCurrentUser({name, email})
           handleSubmitLogin(e, email, password)
-          // setCurrentUser({
-          //   name: data.name,
-          //   email: data.email
-          // })
         } else {
           setIsLoading(false)
           setIsErrorPopupOpened(true)
@@ -469,11 +460,15 @@ function App(props) {
 
       <div className="App">
 
+
         <div className="page">
           <InfoTooltip title="Что-то пошло не так! Попробуйте ещё раз." name="modal" isOpen={isErrorPopupOpened} onClose={closeAllPopups} image={error} />
           <InfoTooltip title="Запрос выполнен успешно!" name="modal" isOpen={isSuccessPopupOpened} onClose={closeAllPopups} image={union} />
           <Preloader isOpen={isPreloaderOpened} />
           <Switch>
+          <Route exact path="/">
+              <MainComponent />
+            </Route>
             <Route path="/signin">
               <Login onSubmit={handleSubmitLogin} />
             </Route>
@@ -498,12 +493,12 @@ function App(props) {
               component={MoviesComponent}
               isCheckingToken={isCheckingToken}
             />
-            <Route path="/">
-              <MainComponent />
-            </Route>
+            
+            
             <Route path="*">
               <PageNotFound />
             </Route>
+
             <Route>
               {isLogged ? (
                 <Redirect to="/movies" />
