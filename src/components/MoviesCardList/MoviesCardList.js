@@ -7,11 +7,18 @@ function MoviesCardList(props) {
     if (!props.MoreVisible){
         visible = 'not'
     }
+    let elements = []
+    if (props.message === 'Ничего не найдено'){
+        elements = []
+    } else {
+        elements = props.cards
+    }
+
 
     return (
         <section className="elements">
 
-            {props.cards.map((element) => {
+            {elements.map((element) => {
                 return (<MoviesCard savedCards={props.savedCards} onClick={props.onClick} key={element._id} cardsToAdd={element} buttonClass={props.buttonClass}/>)
             })}
             <button onClick={props.moreClick} className={`pre__button ${visible}`}>Ещё</button>

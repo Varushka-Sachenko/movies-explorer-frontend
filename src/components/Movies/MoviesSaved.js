@@ -6,7 +6,7 @@ function MoviesSaved(props) {
     return (
         <section className="movies">
             <SearchFormSaved onSubmit={props.searchClick} />
-            <MoviesCardList savedCards={props.savedCards} MoreVisible={props.MoreVisible} onClick={props.onClick} moreClick={props.moreClick} cards={props.cards} buttonClass={props.buttonClass}/>
+            <MoviesCardList message={props.message} savedCards={props.savedCards} MoreVisible={props.MoreVisible} onClick={props.onClick} moreClick={props.moreClick} cards={props.cards} buttonClass={props.buttonClass}/>
             <Preloader />
         </section>);
 }

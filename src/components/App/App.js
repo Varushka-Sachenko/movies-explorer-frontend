@@ -48,7 +48,8 @@ function App(props) {
   const [isPreloaderOpened, setPreloaderOpened] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isCheckingToken, setIsCheckingToken] = React.useState(true)
-  const [movieMes, setMovieMes] = React.useState('');
+  const [movieMes, setMovieMes] = React.useState('Выполни поиск');
+  const [movieMesSaved, setMovieMesSaved] = React.useState('');
   const [moreVisible, setMoreVisible] = React.useState(true);
   const [show, setShow] = React.useState(3);
   const [currentUser, setCurrentUser] = React.useState(defaultUserInfo);
@@ -240,7 +241,7 @@ function App(props) {
     let found = savedMovies.filter(v => v.nameRU.toLowerCase().includes(word));
 
     if (found.length === 0) {
-      setMovieMes('Ничего не найдено')
+      setMovieMesSaved('Ничего не найдено')
       console.log(movieMes)
     }
     //console.log(found)
@@ -356,13 +357,14 @@ function App(props) {
   }
 
   const SavedMoviesComponent = (props) => {
+    console.log(savedMovies)
     if (searchSaved.length === 0) {
       return (<>
         <HeaderAside isOpen={isAsideOpened} closeClick={handleAsideChange} />
         <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
-        <MoviesMessage message={movieMes} />
-        <MoviesSaved savedCards={savedMovies} searchClick={handleFindSaved} MoreVisible={false} moreClick={handleMoreClick} onClick={handleCardClick} cards={savedMovies} buttonClass="element__saved" />
-
+        
+        <MoviesSaved message={movieMesSaved} savedCards={savedMovies} searchClick={handleFindSaved} MoreVisible={false} moreClick={handleMoreClick} onClick={handleCardClick} cards={savedMovies} buttonClass="element__saved" />
+        <MoviesMessage message={movieMesSaved} />
         <Footer />
       </>)
 

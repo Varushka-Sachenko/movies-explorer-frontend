@@ -100,6 +100,7 @@ export default class Api {
   }
 
   deleteMovie(cardId) {
+    console.log(cardId)
     return fetch(`${this.adress}/movies/${cardId}`, {
       method: 'DELETE',
       headers: {
