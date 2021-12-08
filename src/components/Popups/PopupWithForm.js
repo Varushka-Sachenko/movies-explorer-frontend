@@ -1,8 +1,9 @@
 import React, { useCallback } from "react";
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 export default function PopupWithForm(props) {
+  const currentUser = React.useContext(CurrentUserContext);
   let statusOpened = ""
-
+  let inactive = '';
   if (props.isOpen) {
     statusOpened = "popup_opened"
 
@@ -10,6 +11,8 @@ export default function PopupWithForm(props) {
     statusOpened = ""
 
   }
+
+  
 
   const closePopups = props.onClose
 
@@ -19,7 +22,7 @@ export default function PopupWithForm(props) {
     }
   }
 
-  const [values, setValues] = React.useState({});
+  const [values, setValues] = React.useState({name: currentUser.name, email:currentUser.email});
   const [errors, setErrors] = React.useState({});
   const [isValid, setIsValid] = React.useState(false);
 
@@ -27,11 +30,18 @@ export default function PopupWithForm(props) {
     const target = event.target;
     const name = target.name;
     const value = target.value;
-    setValues({ ...values, [name]: value });
-    setErrors({ ...errors, [name]: target.validationMessage });
+    setValues({...values, [name]: value});
+    setErrors({...errors, [name]: target.validationMessage });
     setIsValid(target.closest("form").checkValidity());
+    if (target.name === 'email' &&(!(( target.value.indexOf('.')=== (target.value.length - 2) || target.value.indexOf('.')=== (target.value.length - 3))))){
+        setErrors({...errors, [name]: 'Пожалуйста, введите адрес электронной почты.' });
+    }
+    
+    if ((value === currentUser.email && values.name=== currentUser.name) || (value === currentUser.name && values.email=== currentUser.email)){
+      setIsValid(false)
+    }
+    
   };
-
   const resetForm = useCallback(
     (newValues = {}, newErrors = {}, newIsValid = false) => {
       setValues(newValues);
@@ -41,7 +51,7 @@ export default function PopupWithForm(props) {
     [setValues, setErrors, setIsValid]
   );
 
-  let inactive = '';
+  
   if (!isValid) {
     inactive = 'inactive';
   }
@@ -49,7 +59,7 @@ export default function PopupWithForm(props) {
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
 
-  const currentUser = React.useContext(CurrentUserContext);
+
 
   // После загрузки текущего пользователя из API
   // его данные будут использованы в управляемых компонентах.
@@ -66,6 +76,7 @@ export default function PopupWithForm(props) {
   }
 
   const handleSubmit = (event) => {
+    console.log(props.onUpdateUser)
     // Запрещаем браузеру переходить по адресу формы
     event.preventDefault();
     // Передаём значения управляемых компонентов во внешний обработчик
@@ -85,11 +96,11 @@ export default function PopupWithForm(props) {
         <form onChange={handleChange} className={`form form_${props.name} form__error`} name={props.name} onSubmit={handleSubmit}>
           <h2 className="form__text form__error-text">{props.title}</h2>
           <input name="name" className="form__field-text form__field-text_input_name form__input-text" placeholder="Имя" type="text"
-            size="40" id="username" required minLength="2" value={name} maxLength="40" onChange={handleUserName} />
+            size="40" id="username" required minLength="2" defaultValue={name} maxLength="40" onChange={handleUserName} />
           <span id="username-error" className="username-error form__input-error">{errors.name}</span>
 
           <input name="info" className="form__field-text form__field-text_input_job form__input-text" placeholder="Email"
-            type="email" size="40" id="status" required minLength="2" value={email} maxLength="200" onChange={handleUserEmail} />
+            type="email" size="40" id="status" required minLength="2" defaultValue={email} maxLength="200" onChange={handleUserEmail} />
           <span id="status-error" className="status-error form__input-error">{errors.info}</span>
           <button type="submit" className={`form__save-button form__save-button_login form__error-button ${inactive}`}>{props.buttonText}</button>
         </form>

@@ -21,8 +21,6 @@ function MoviesCard(props) {
     if (props.buttonClass === 'element__like'){
         image = `https://api.nomoreparties.co${props.cardsToAdd.image.url}`
     }
-
-    console.log(cardLikeButtonClassName)
     return (
         <div className="element">
             <div className="element__info">

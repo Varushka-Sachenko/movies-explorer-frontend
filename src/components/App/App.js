@@ -85,6 +85,13 @@ function App(props) {
   const signOut = () => {
 
     localStorage.removeItem('token');
+    localStorage.removeItem("isLogged")
+    localStorage.removeItem("word")
+    localStorage.removeItem("foundMovies")
+    setCurrentUser(defaultUserInfo)
+    setFoundMovies([])
+    setSavedMovies([])
+    setShowMovies([])
     setIsLogged(false)
     history.push('/');
   }
@@ -170,35 +177,29 @@ function App(props) {
 
 
   const handleUpdateUser = (data) => {
+    // console.log(data)
+    // console.log(data)
+    mainApi.editProfileINfo(data)
 
-    if (data.name !== currentUser.name && data.email !== currentUser.email) {
-      mainApi.editProfileINfo(data)
-        .then((useData) => {
-          setCurrentUser(useData)
-          setIsEditProfilePopupOpen(false)
-            .then(() => {
-              setIsSuccessPopupOpened(true)
-            })
-
+      .then((useData) => {
+        setCurrentUser({
+          name: useData.name,
+          email: useData.email
         })
-        .catch((err) => {
-          setIsEditProfilePopupOpen(false)
-          setIsErrorPopupOpened(true)
-          console.log(err);
-        });
+        setIsEditProfilePopupOpen(false)
+        setIsSuccessPopupOpened(true)
 
-    } else {
-      setIsEditProfilePopupOpen(false)
-      setIsSuccessPopupOpened(true)
-    }
-
-
-
+      })
+      .catch((err) => {
+        setIsEditProfilePopupOpen(false)
+        setIsErrorPopupOpened(true)
+        console.log(err);
+      });
 
   }
 
   React.useEffect(() => {
-    //console.log(foundMovies)
+    console.log(foundMovies)
     handleFilmsToShow(foundMovies, setShowMovies, setMoreVisible, isShort, show);
   }, [foundMovies, isShort, setShowMovies, show, savedMovies])
 
@@ -218,6 +219,8 @@ function App(props) {
     //console.log(found)
 
     setFoundMovies(found)
+    localStorage.setItem("word", word)
+    localStorage.setItem("foundMovies", JSON.stringify(found))
     //console.log(filmCounter)
     setIsLoading(false)
   }
@@ -276,14 +279,21 @@ function App(props) {
               name: res.name,
               email: res.email
             })
+            if (localStorage.getItem('foundMovies')) {
+              console.log(localStorage.getItem('foundMovies'))
+              setFoundMovies(JSON.parse(localStorage.getItem('foundMovies')))
+            }
+
 
             // поместим их в стейт внутри App.js
             setIsLogged(true)
+            
             history.push("/movies");
             setIsLoading(true)
           }
         })
         .finally(() => {
+          localStorage.setItem("isLogged", true)
           setIsCheckingToken(false);
         })
         .catch((err) => {
@@ -352,7 +362,7 @@ function App(props) {
         <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
         <MoviesMessage message={movieMes} />
         <Movies savedCards={savedMovies} searchClick={handleFindSaved} MoreVisible={false} moreClick={handleMoreClick} onClick={handleCardClick} cards={savedMovies} buttonClass="element__saved" />
-        
+
         <Footer />
       </>)
 
@@ -458,7 +468,6 @@ function App(props) {
               <Login onSubmit={handleSubmitLogin} />
             </Route>
             <Route path="/signup">
-
               <Register onSubmit={handleSubmitRegister} />
             </Route>
             <ProtectedRoute
@@ -467,7 +476,6 @@ function App(props) {
               component={SavedMoviesComponent}
               isCheckingToken={isCheckingToken}
             />
-
             <ProtectedRoute
               path="/profile"
               loggedIn={isLogged}
@@ -480,16 +488,12 @@ function App(props) {
               component={MoviesComponent}
               isCheckingToken={isCheckingToken}
             />
-
-
             <Route path="/">
               <MainComponent />
             </Route>
             <Route path="*">
               <PageNotFound />
             </Route>
-
-
             <Route>
               {isLogged ? (
                 <Redirect to="/movies" />
@@ -497,8 +501,6 @@ function App(props) {
                 <Redirect to="/" />
               )}
             </Route>
-
-
           </Switch>
 
         </div>

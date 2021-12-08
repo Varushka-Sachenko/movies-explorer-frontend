@@ -2,11 +2,12 @@ import React from 'react'
 import search from '../../images/find.png'
 
 function SearchForm(props) {
-    const [word, setWord] = React.useState('');
+    const [word, setWord] = React.useState(localStorage.getItem('word'));
     const [isShort, setShort] = React.useState(false);
     function handleSubmit (e){
         //console.log('word', word)
         props.onSubmit(word, isShort)
+        localStorage.setItem("word", word)
     }
     function handleWord(e) {
         setWord(e.target.value);
@@ -17,7 +18,7 @@ function SearchForm(props) {
     return (
         <div>
             <form className="searchForm" onSubmit={handleSubmit}>
-                <input value={localStorage.word} onChange={handleWord} className="form__input" placeholder="Фильм" required></input>
+                <input value={word} onChange={handleWord} className="form__input" placeholder="Фильм" required></input>
                 <button className="form__button"><img alt="поиск" src={search}></img></button>
             </form>
             <div className="switch__box">
