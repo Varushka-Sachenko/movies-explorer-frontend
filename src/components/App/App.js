@@ -88,6 +88,7 @@ function App(props) {
     localStorage.removeItem("isLogged")
     localStorage.removeItem("word")
     localStorage.removeItem("foundMovies")
+    //localStorage.removeItem("searchSaved")
     setCurrentUser(defaultUserInfo)
     setFoundMovies([])
     setSavedMovies([])
@@ -199,7 +200,6 @@ function App(props) {
   }
 
   React.useEffect(() => {
-    console.log(foundMovies)
     handleFilmsToShow(foundMovies, setShowMovies, setMoreVisible, isShort, show);
   }, [foundMovies, isShort, setShowMovies, show, savedMovies])
 
@@ -243,6 +243,8 @@ function App(props) {
       console.log(movieMes)
     }
     //console.log(found)
+    // localStorage.setItem('wordSaved', word)
+    // localStorage.setItem("searchSaved", JSON.stringify(found))
 
     setSaved(found)
     //console.log(filmCounter)
@@ -282,7 +284,11 @@ function App(props) {
             if (localStorage.getItem('foundMovies')) {
               console.log(localStorage.getItem('foundMovies'))
               setFoundMovies(JSON.parse(localStorage.getItem('foundMovies')))
+              
             }
+            // if (localStorage.getItem('searchSaved')) {
+            //   setSaved(JSON.parse(localStorage.getItem('searchSaved')))
+            // }
 
 
             // поместим их в стейт внутри App.js
@@ -441,6 +447,10 @@ function App(props) {
           setIsLoading(false)
           setIsSuccessPopupOpened(true)
           handleSubmitLogin(e, email, password)
+          // setCurrentUser({
+          //   name: data.name,
+          //   email: data.email
+          // })
         } else {
           setIsLoading(false)
           setIsErrorPopupOpened(true)
