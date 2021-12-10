@@ -1,4 +1,4 @@
-export const handleFilmsToShow = (filteredFilms, setFilmCounter, setMoreOn, isShortFilm, show) => {
+export const handleFilmsToShow = (filteredFilms, setFilmCounter, setMoreOn, isShortFilm, show, setMovieMes) => {
     //console.log(setMovieMes)
     const counter = show;
     const shortFilms = filteredFilms.filter(film => film.duration <= 40);

@@ -5,7 +5,7 @@ import MoviesCardList from '../MoviesCardList/MoviesCardList';
 function Movies(props) {
     return (
         <section className="movies">
-            <SearchForm onSubmit={props.searchClick} />
+            <SearchForm changeShort={props.changeShort} onSubmit={props.searchClick} />
             <MoviesCardList savedCards={props.savedCards} MoreVisible={props.MoreVisible} onClick={props.onClick} moreClick={props.moreClick} cards={props.cards} buttonClass={props.buttonClass}/>
             <Preloader />
         </section>);

@@ -60,13 +60,13 @@ function Profile(props) {
     };
     // После загрузки текущего пользователя из API
     // его данные будут использованы в управляемых компонентах.
-    // React.useEffect(() => {
-    //     if ((props.currentUser.name !== name || props.currentUser.email !== email) && isValid) {
-    //         setActiveButton(true)
-    //     } else {
-    //         setActiveButton(false)
-    //     }
-    // }, [name, email, isValid, props.currentUser.name, props.currentUser.email])
+    React.useEffect(() => {
+        if ((props.currentUser.name !== name || props.currentUser.email !== email) && isValid) {
+            setActiveButton(true)
+        } else {
+            setActiveButton(false)
+        }
+    }, [name, email, isValid, props.currentUser.name, props.currentUser.email])
     
     function handleUserName(e) {
         setName(e.target.value);

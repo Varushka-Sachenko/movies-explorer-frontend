@@ -212,6 +212,10 @@ function App(props) {
     handleFilmsToShow(searchSaved, setShowMovies, setMoreVisible, isShort, 100);
   }, [searchSaved, setShowMovies, isShort])
 
+  const handleCheckbox = (isShort) => {
+    setIsShort(isShort)
+  }
+
   const handleFindSaved = (word, isShort) => {
     setIsShort(isShort)
     setIsLoading(true)
@@ -219,6 +223,10 @@ function App(props) {
     word = word.trim().toLowerCase();
 
     let found = savedMovies.filter(v => v.nameRU.toLowerCase().includes(word));
+    if (isShort){
+      found = found.filter(film => film.duration <= 40);
+    }
+    
 
     if (found.length === 0) {
       setMovieMesSaved('Ничего не найдено')
@@ -317,7 +325,7 @@ function App(props) {
       return (<>
         <HeaderAside isOpen={isAsideOpened} closeClick={closeAllPopups} />
         <Header1 isOpen={isAsideOpened} asideClick={handleAsideChange} savedLink="/saved-movies" moviesLink="/movies" />
-        <Movies savedCards={savedMovies} MoreVisible={moreVisible} moreClick={handleMoreClick} searchClick={handleFindFilm} onClick={handleCardClick} cards={filmCounter} buttonClass="element__like" />
+        <Movies changeShort={handleCheckbox} savedCards={savedMovies} MoreVisible={moreVisible} moreClick={handleMoreClick} searchClick={handleFindFilm} onClick={handleCardClick} cards={filmCounter} buttonClass="element__like" />
         <Footer />
 
       </>)
