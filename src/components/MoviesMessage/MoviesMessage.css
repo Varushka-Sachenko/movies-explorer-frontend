@@ -1,0 +1,13 @@
+.message{
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 20px;
+    /* identical to box height, or 111% */
+    color: #8B8B8B;
+    margin:auto;
+    height: 50px;
+    margin-top: 50px;
+
+}

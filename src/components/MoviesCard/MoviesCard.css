@@ -1,0 +1,122 @@
+.element{
+    display: flex;
+    background: #2F2F2F;
+    margin-top: 40px;
+    padding-left: 22px;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 5px;
+    flex-wrap: wrap-reverse;
+    text-decoration: none;
+
+}
+
+.element__info{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.element__title{
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 22px;
+    /* identical to box height */
+    margin-top: 22px;
+    margin-bottom: 13px;
+    color: #FFFFFF;
+    text-align: start;
+    text-decoration: none;
+}
+
+.element__duration{
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 11px;
+    line-height: 13px;
+    display: flex;
+    align-items: center;
+    text-align: start;
+    color: #8B8B8B;
+
+}
+
+.element__like{
+    background-image: url(../../images/like.png);
+    width: 14px;
+    height: 12px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    background-color: transparent;
+    margin-top: 30px;
+    margin-bottom: 22px;
+}
+
+.like_active{
+    background-image: url(../../images/likeActive.png);
+    width: 14px;
+    height: 12px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    background-color: transparent;
+    margin-top: 30px;
+    margin-bottom: 22px;
+}
+
+.like_active{
+    background-image: url(../../images/likeActive.png);
+    width: 14px;
+    height: 12px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    background-color: transparent;
+    margin-top: 30px;
+    margin-bottom: 22px;
+}
+
+.element__saved{
+    background-image: url(../../images/del.png);
+    width: 14px;
+    height: 12px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    background-color: transparent;
+    margin-top: 30px;
+    margin-bottom: 22px;
+}
+
+.element__image{
+    width: 220px;
+    height: 122px;
+}
+
+@media screen and (max-width:520px){
+    .element{
+        padding: 0;
+    }
+    .element__image{
+        width: 100%;
+        height: auto;
+    }
+    .element__info{
+        width: 100%;
+        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: space-between;
+
+    }
+    .element__wrap{
+        width: 80%;
+        padding-left: 22px;
+    }
+    .element__like{
+        margin-right: 15px;
+    }
+}

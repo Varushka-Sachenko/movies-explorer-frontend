@@ -1,0 +1,237 @@
+.header{
+    width: 80%;
+    margin:auto;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+
+
+.header__close{
+    background-color: transparent;
+    border: none;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    padding: 0;
+}
+
+.header__close:hover{
+    cursor: pointer;
+    opacity: .7;
+    transition: .5s;
+}
+
+.header__close:active ~ .aside{
+    display: none;
+}
+
+.header__logo{
+    height: 38px;
+    padding: 0;
+}
+
+.header__logo:hover{
+    cursor: pointer;
+    opacity: .7;
+}
+
+.header__buttons{
+    display: flex;
+    align-items: center;
+}
+
+.header__log-in-button{
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 32px;
+    /* identical to box height, or 122% */
+    text-align: right;
+    text-decoration: none;
+    background-color: #3DDC84;
+    color: black;
+    border-radius: 3px;
+    display: flex;
+    min-width: 76px;
+    justify-content: center;
+    margin-left: 30px;
+}
+
+.header__log-in-button:hover{
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.header__reg-button{
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    /* identical to box height, or 122% */
+    text-align: right;
+    color: #FFFFFF;
+    height: max-content;
+    text-decoration: none;
+
+}
+
+.header__reg-button:hover{
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.header__link{
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 18px;
+    /* identical to box height, or 138% */
+    margin-right: 16px;
+    text-align: right;
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+.header__link:hover{
+    cursor: pointer;
+    opacity: .7;
+    transition: .3s;
+}
+
+.header__nav{
+    height: fit-content;
+}
+
+.acount__img{
+    background-color: #313131;
+    width: 26px;
+    height: 26px;
+    border-radius: 50px;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-left: 7px;
+    padding: 0;
+    display: grid;
+    align-content: center;
+    justify-content: center;
+
+}
+
+.header__open{
+    width: 44px;
+    height: 44px;
+    border: none;
+    background-color: transparent;
+    display: none;
+    visibility: hidden;
+}
+
+.header__open:hover{
+    cursor: pointer;
+    opacity: .7;
+}
+
+.aside{
+    position: fixed;
+    background-color: #202020;
+    height: 100vh;
+    top: 0;
+    right: 0;
+    max-width: 520px;
+    flex-direction: column;
+    
+}
+
+.aside__wrap{
+    background-color: rgba(0,0,0,.3);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    display: none;
+    z-index: 1;
+}
+
+.header__nav_aside{
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+    align-items: center;
+    margin: auto;
+    margin-top: 165px;
+}
+
+@media screen and (max-width: 879px){
+    .header{
+        max-width: 320px;
+    }
+    .header1{
+        max-width: 80%;
+    }
+    .aside{
+        max-width: 520px;
+    }
+    .header0{
+        max-width: 85%;
+    }
+    .header__open{
+        display: flex;
+        visibility: visible;
+    }
+
+    .header__nav{
+        display: none;
+    }
+    .header__nav_aside{
+        display: flex;
+    }
+    .header__buttons{
+        display: none;
+    }
+    .header0__buttons{
+        display: flex;
+    }
+    .header__logo{
+        margin: auto;
+    }
+    .header0__logo{
+        margin: 0;
+    }
+
+    .header__link{
+        font-family: Inter;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 22px;
+        /* identical o box height */
+        text-align: center;
+        color: #FFFFFF;
+        margin-bottom: 28px;
+    }
+
+    .header__link:active{
+        text-decoration: 2px solid #FFFFFF;
+    }
+
+    .header__buttons_aside{
+        display: flex;
+        align-self: end;
+        margin: auto;
+        margin-bottom: 85px;
+    }
+}
+
+.active{
+    display: flex;
+}
