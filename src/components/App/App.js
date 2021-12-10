@@ -127,6 +127,8 @@ function App(props) {
           card._id = i._id
         }
       });
+      console.log(savedMovies)
+      
       mainApi.deleteMovie(card._id)
         .then(() => {
           const cardsCopy = savedMovies.filter(elem => elem._id !== card._id);
@@ -177,28 +179,6 @@ function App(props) {
   }
 
 
-
-  const handleUpdateUser = (data) => {
-    // console.log(data)
-    // console.log(data)
-    mainApi.editProfileINfo(data)
-
-      .then((useData) => {
-        setCurrentUser({
-          name: useData.name,
-          email: useData.email
-        })
-        setIsEditProfilePopupOpen(false)
-        setIsSuccessPopupOpened(true)
-
-      })
-      .catch((err) => {
-        setIsEditProfilePopupOpen(false)
-        setIsErrorPopupOpened(true)
-        console.log(err);
-      });
-
-  }
 
   React.useEffect(() => {
     console.log(foundMovies)
@@ -382,7 +362,7 @@ function App(props) {
   const ProfileComponent = (props) => {
 
     return (<>
-      <Profile onEditProfile={handleEditProfileClick} signOut={signOut} handleUpdateUser={handleUpdateUser} isEditProfilePopupOpen={isEditProfilePopupOpen} closeAllPopups={closeAllPopups} name={currentUser.name} email={currentUser.email} isAsideOpened={isAsideOpened} handleAsideChange={handleAsideChange}></Profile>
+      <Profile updateCurrentUser={setCurrentUser} currentUser={currentUser} onEditProfile={handleEditProfileClick} signOut={signOut} isEditProfilePopupOpen={isEditProfilePopupOpen} closeAllPopups={closeAllPopups} name={currentUser.name} email={currentUser.email} isAsideOpened={isAsideOpened} handleAsideChange={handleAsideChange}></Profile>
     </>)
   }
 

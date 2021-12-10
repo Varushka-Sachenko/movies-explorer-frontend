@@ -27,6 +27,11 @@
     /* identical to box height */
     
     color: #FFFFFF;
+    background-color: transparent;
+    border: none;
+    text-align: center;
+    display: flex;
+    align-items: center;
 }
 
 .profile__wrap:last-child{

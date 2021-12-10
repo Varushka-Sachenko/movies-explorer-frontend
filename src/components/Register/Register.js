@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import { Link, withRouter } from 'react-router-dom';
 import logo from '../../images/logo.png';
+import validator from 'validator'
 function Register(props) {
     const [name, setName] = React.useState('');
     const [email, setEmail] = React.useState('');
@@ -27,8 +28,8 @@ function Register(props) {
     setValues({...values, [name]: value});
     setErrors({...errors, [name]: target.validationMessage });
     setIsValid(target.closest("form").checkValidity());
-    if (target.name === 'email' &&(!(( target.value.indexOf('.')=== (target.value.length - 2) || target.value.indexOf('.')=== (target.value.length - 3))))){
-        setErrors({...errors, [name]: 'Пожалуйста, введите адрес электронной почты.' });
+    if (name === 'email' && !validator.isEmail(value)) {
+        setErrors({ ...errors, [name]: 'Пожалуйста, введите адрес электронной почты.' });
     }
     
   };
